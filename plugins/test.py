@@ -14,6 +14,7 @@ from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, Acces
 from pyrogram.errors import FloodWait
 from config import Config
 from translation import Translation
+from plugins.generate import generate_session
 
 from typing import Union, Optional, AsyncGenerator
 
@@ -104,7 +105,8 @@ class CLIENT:
      user_id = int(message.from_user.id)
      text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat...\nPlease Add Your Pyrogram Session With Your Own Risk..."
      await bot.send_message(user_id, text=text)
-
+     
+"""
      msg = await bot.ask(chat_id=user_id, text="<b>Enter your phone number:</b>")
      if msg.text=='/cancel':
         return await msg.reply('Process Cancelled !')
@@ -122,9 +124,14 @@ class CLIENT:
          msg = await bot.ask(chat_id=user_id, text="<b>Two-Step Verification enabled. Please enter your account password:</b>")
          pw = msg.text
          await client.sign_in(password=pw)
-
-     session_string = await client.export_session_string()
-     client = await start_clone_bot(self.client(session_string, True), True)
+"""
+     session_string = await generate_session(bot, message)
+     if len(session_string) < SESSION_STRING_SIZE:
+        return await msg.reply('Invalid Session String')
+     try:
+       client = await start_clone_bot(self.client(session_string, True), True)
+     except Exception as e:
+       await msg.reply_text(f"<b>User Bot Error :</b> `{e}`")
      user = client.me
      details = {
        'id': user.id,
