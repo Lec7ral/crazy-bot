@@ -106,6 +106,8 @@ class CLIENT:
      await bot.send_message(user_id, text=text)
 
      msg = await bot.ask(chat_id=user_id, text="<b>Enter your phone number:</b>")
+     if msg.text=='/cancel':
+        return await msg.reply('Process Cancelled !')
      phone_number = msg.text
 
      client = TelegramClient(phone_number, self.api_id, self.api_hash)
