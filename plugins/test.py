@@ -122,7 +122,6 @@ class CLIENT:
          msg = await bot.ask(chat_id=user_id, text="<b>Two-Step Verification enabled. Please enter your account password:</b>")
          pw = msg.text
          await client.sign_in(password=pw)
-      bot.send_message(user_id, text="esta logeado")
 
      session_string = await client.export_session_string()
      client = await start_clone_bot(self.client(session_string, True), True)
