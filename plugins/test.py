@@ -109,6 +109,7 @@ class CLIENT:
      if msg.text=='/cancel':
         return await msg.reply('Process Cancelled !')
      phone_number = msg.text
+     print(phone_number)
 
      client = TelegramClient(phone_number, self.api_id, self.api_hash)
      await client.connect()
