@@ -106,11 +106,6 @@ class CLIENT:
      text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat...\nPlease Add Your Pyrogram Session With Your Own Risk..."
      await bot.send_message(user_id, text=text)
      session_msg = await bot.ask(chat_id=user_id, text="procede")
-    """ session_str = await generate_session(bot, session_msg)
-     if session_str:
-        bot.send_message(user_id, text=session_str)
-     else:
-        bot.send_message(useri_id, text="ni ping")"""
      try:
        client = await start_clone_bot(self.client(generate_session(bot, session_msg), True), True)
      except Exception as e:
