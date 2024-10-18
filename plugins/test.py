@@ -109,9 +109,8 @@ class CLIENT:
      if msg.text=='/cancel':
         return await msg.reply('Process Cancelled !')
      phone_number = msg.text
-     print(phone_number)
-
-     client = TelegramClient(phone_number, self.api_id, self.api_hash)
+     
+     client = Client(phone_number, self.api_id, self.api_hash)
      await client.connect()
 
      if not await client.is_user_authorized():
@@ -123,6 +122,7 @@ class CLIENT:
          msg = await bot.ask(chat_id=user_id, text="<b>Two-Step Verification enabled. Please enter your account password:</b>")
          pw = msg.text
          await client.sign_in(password=pw)
+      bot.send_message(user_id, text="esta logeado")
 
      session_string = await client.export_session_string()
      client = await start_clone_bot(self.client(session_string, True), True)
