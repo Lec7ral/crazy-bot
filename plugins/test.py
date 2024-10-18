@@ -105,7 +105,8 @@ class CLIENT:
      user_id = int(message.from_user.id)
      text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat...\nPlease Add Your Pyrogram Session With Your Own Risk..."
      await bot.send_message(user_id, text=text)
-     session_str = await generate_session(bot, message)
+     session_msg = await bot.ask(chat_id=user_id, text="procede")
+     session_str = await generate_session(bot, session_msg)
      if session_str:
         bot.send_message(user_id, text=session_str)
      else:
