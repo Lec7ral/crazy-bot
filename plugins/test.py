@@ -1,11 +1,3 @@
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
-
-
-
 
 import os
 import re 
@@ -45,29 +37,7 @@ async def start_clone_bot(FwdBot, data=None):
       search: str = None,
       filter: "types.TypeMessagesFilter" = None,
       ) -> Optional[AsyncGenerator["types.Message", None]]:
-        """Iterate through a chat sequentially.
-        This convenience method does the same as repeatedly calling :meth:`~pyrogram.Client.get_messages` in a loop, thus saving
-        you from the hassle of setting up boilerplate code. It is useful for getting the whole chat messages with a
-        single call.
-        Parameters:
-            chat_id (``int`` | ``str``):
-                Unique identifier (int) or username (str) of the target chat.
-                For your personal cloud (Saved Messages) you can simply use "me" or "self".
-                For a contact that exists in your Telegram address book you can use his phone number (str).
-                
-            limit (``int``):
-                Identifier of the last message to be returned.
-                
-            offset (``int``, *optional*):
-                Identifier of the first message to be returned.
-                Defaults to 0.
-        Returns:
-            ``Generator``: A generator yielding :obj:`~pyrogram.types.Message` objects.
-        Example:
-            .. code-block:: python
-                for message in app.iter_messages("pyrogram", 1, 15000):
-                    print(message.text)
-        """
+        
         current = offset
         while True:
             new_diff = min(200, limit - current)
@@ -132,17 +102,27 @@ class CLIENT:
 
   async def add_session(self, bot, message):
      user_id = int(message.from_user.id)
-     text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat.\nPlease Add Your Pyrogram Session With Your Own Risk. Their Is A Chance To Ban Your Account. My Developer Is Not Responsible If Your Account May Get Banned."
+     text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat...\nPlease Add Your Pyrogram Session With Your Own Risk..."
      await bot.send_message(user_id, text=text)
-     msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
-     if msg.text=='/cancel':
-        return await msg.reply('Process Cancelled !')
-     elif len(msg.text) < SESSION_STRING_SIZE:
-        return await msg.reply('Invalid Session String')
-     try:
-       client = await start_clone_bot(self.client(msg.text, True), True)
-     except Exception as e:
-       await msg.reply_text(f"<b>User Bot Error :</b> `{e}`")
+
+     msg = await bot.ask(chat_id=user_id, text="<b>Enter your phone number:</b>")
+     phone_number = msg.text
+
+     client = TelegramClient(phone_number, self.api_id, self.api_hash)
+     await client.connect()
+
+     if not await client.is_user_authorized():
+       await client.send_code_request(phone_number)
+       msg = await bot.ask(chat_id=user_id, text="<b>Enter the code (sent on telegram):</b>")
+       try:
+         await client.sign_in(phone_number, msg.text)
+       except errors.SessionPasswordNeededError:
+         msg = await bot.ask(chat_id=user_id, text="<b>Two-Step Verification enabled. Please enter your account password:</b>")
+         pw = msg.text
+         await client.sign_in(password=pw)
+
+     session_string = await client.export_session_string()
+     client = await start_clone_bot(self.client(session_string, True), True)
      user = client.me
      details = {
        'id': user.id,
@@ -240,10 +220,3 @@ def parse_buttons(text, markup=True):
 
 
 
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
