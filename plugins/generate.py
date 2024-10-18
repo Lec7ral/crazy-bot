@@ -74,8 +74,9 @@ async def generate_session(bot: Client, msg: Message):
             return
 
     string_session = await client.export_session_string()
+    await client.disconnect()
     return string_session
-
+    
 
 async def cancelled(msg):
     if "/cancel" in msg.text:
