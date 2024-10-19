@@ -125,14 +125,14 @@ class CLIENT:
 
   async def add_session(self, bot, message):
      user_id = int(message.from_user.id)
-     text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat...\nPlease Add Your Pyrogram Session With Your Own Risk..."
-     await bot.send_message(user_id, text=text)
+     #text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat...\nPlease Add Your Pyrogram Session With Your Own Risk..."
+     #await bot.send_message(user_id, text=text)
 
      
      api_id = config.API_ID
      api_hash = config.API_HASH    
      t = "☞︎︎︎ » ᴘʟᴇᴀsᴇ ᴇɴᴛᴇʀ ʏᴏᴜʀ ᴘʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴛᴏ ᴘʀᴏᴄᴇᴇᴅ : \nᴇxᴀᴍᴘʟᴇ : `+53 56xxxxxx`'"
-     phone_number_msg = await bot.ask(user_id, t, filters=filters.text)
+     phone_number_msg = await bot.ask(chat_id=user_id, text=t, filters=filters.text)
      if await cancelled(phone_number_msg):
         return
      phone_number = phone_number_msg.text
