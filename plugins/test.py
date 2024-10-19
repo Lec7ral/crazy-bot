@@ -132,7 +132,8 @@ class CLIENT:
      api_id = config.API_ID
      api_hash = config.API_HASH    
      #t = "☞︎︎︎ » ᴘʟᴇᴀsᴇ ᴇɴᴛᴇʀ ʏᴏᴜʀ ᴘʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴛᴏ ᴘʀᴏᴄᴇᴇᴅ : \nᴇxᴀᴍᴘʟᴇ : `+53 56xxxxxx`'"
-     phone_number_msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
+     #phone_number_msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
+     await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
      if await cancelled(phone_number_msg):
         return
      phone_number = phone_number_msg.text
