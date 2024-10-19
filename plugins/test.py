@@ -1,22 +1,8 @@
-from pyrogram import Client as Client1
-from asyncio.exceptions import TimeoutError
-from pyrogram.errors import (
-    ApiIdInvalid,
-    PhoneNumberInvalid,
-    PhoneCodeInvalid,
-    PhoneCodeExpired,
-    SessionPasswordNeeded,
-    PasswordHashInvalid
-)
-from pyrogram.errors import (
-    ApiIdInvalid as ApiIdInvalid1,
-    PhoneNumberInvalid as PhoneNumberInvalid1,
-    PhoneCodeInvalid as PhoneCodeInvalid1,
-    PhoneCodeExpired as PhoneCodeExpired1,
-    SessionPasswordNeeded as SessionPasswordNeeded1,
-    PasswordHashInvalid as PasswordHashInvalid1
-)
-import config
+# Jishu Developer 
+# Don't Remove Credit 🥺
+# Telegram Channel @Madflix_Bots
+# Backup Channel @JishuBotz
+# Developer @JishuDeveloper
 
 
 
@@ -36,7 +22,6 @@ from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, Acces
 from pyrogram.errors import FloodWait
 from config import Config
 from translation import Translation
-#from plugins.generate import generate_session
 
 from typing import Union, Optional, AsyncGenerator
 
@@ -60,7 +45,29 @@ async def start_clone_bot(FwdBot, data=None):
       search: str = None,
       filter: "types.TypeMessagesFilter" = None,
       ) -> Optional[AsyncGenerator["types.Message", None]]:
-        
+        """Iterate through a chat sequentially.
+        This convenience method does the same as repeatedly calling :meth:`~pyrogram.Client.get_messages` in a loop, thus saving
+        you from the hassle of setting up boilerplate code. It is useful for getting the whole chat messages with a
+        single call.
+        Parameters:
+            chat_id (``int`` | ``str``):
+                Unique identifier (int) or username (str) of the target chat.
+                For your personal cloud (Saved Messages) you can simply use "me" or "self".
+                For a contact that exists in your Telegram address book you can use his phone number (str).
+                
+            limit (``int``):
+                Identifier of the last message to be returned.
+                
+            offset (``int``, *optional*):
+                Identifier of the first message to be returned.
+                Defaults to 0.
+        Returns:
+            ``Generator``: A generator yielding :obj:`~pyrogram.types.Message` objects.
+        Example:
+            .. code-block:: python
+                for message in app.iter_messages("pyrogram", 1, 15000):
+                    print(message.text)
+        """
         current = offset
         while True:
             new_diff = min(200, limit - current)
@@ -125,80 +132,24 @@ class CLIENT:
 
   async def add_session(self, bot, message):
      user_id = int(message.from_user.id)
-     #text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat...\nPlease Add Your Pyrogram Session With Your Own Risk..."
-     #await bot.send_message(user_id, text=text)
-
-     
-     api_id = config.API_ID
-     api_hash = config.API_HASH    
-     await bot.send_message(user_id, text=api_id+" y "+api_hash)
-     #t = "☞︎︎︎ » ᴘʟᴇᴀsᴇ ᴇɴᴛᴇʀ ʏᴏᴜʀ ᴘʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴛᴏ ᴘʀᴏᴄᴇᴇᴅ : \nᴇxᴀᴍᴘʟᴇ : `+53 56xxxxxx`'"
-     #phone_number_msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
-     phone_number_msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
-     if await cancelled(phone_number_msg):
-        return
-     phone_number = phone_number_msg.text
-     await msg.reply("» ᴛʀʏɪɴɢ ᴛᴏ sᴇɴᴅ ᴏᴛᴩ ᴀᴛ ᴛʜᴇ ɢɪᴠᴇɴ ɴᴜᴍʙᴇʀ...")
-      
-     client = Client(name="user", api_id=api_id, api_hash=api_hash, in_memory=True)
-     await client.connect()
+     text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat.\nPlease Add Your Pyrogram Session With Your Own Risk. Their Is A Chance To Ban Your Account. My Developer Is Not Responsible If Your Account May Get Banned."
+     await bot.send_message(user_id, text=text)
+     msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
+     if msg.text=='/cancel':
+        return await msg.reply('Process Cancelled !')
+     elif len(msg.text) < SESSION_STRING_SIZE:
+        return await msg.reply('Invalid Session String')
      try:
-        code = await client.send_code(phone_number)
-     except (PhoneNumberInvalid, PhoneNumberInvalid1):
-        await msg.reply("» ᴛʜᴇ **ᴩʜᴏɴᴇ_ɴᴜᴍʙᴇʀ** ʏᴏᴜ'ᴠᴇ sᴇɴᴛ ᴅᴏᴇsɴ'ᴛ ʙᴇʟᴏɴɢ ᴛᴏ ᴀɴʏ ᴛᴇʟᴇɢʀᴀᴍ ᴀᴄᴄᴏᴜɴᴛ.")
-        return
-     try:
-        phone_code_msg = None #cambiar  a mas facil de poner
-        phone_code_msg = await bot.ask(user_id, "» ᴩʟᴇᴀsᴇ sᴇɴᴅ ᴛʜᴇ **ᴏᴛᴩ** ᴛʜᴀᴛ ʏᴏᴜ'ᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ ғʀᴏᴍ ᴛᴇʟᴇɢʀᴀᴍ ᴏɴ ʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ.\nɪғ ᴏᴛᴩ ɪs `12345`, **ᴩʟᴇᴀsᴇ sᴇɴᴅ ɪᴛ ᴀs** `1 2 3 4 5`.", filters=filters.text, timeout=600)
-        if await cancelled(phone_code_msg):
-           return
-     except TimeoutError:
-        await msg.reply("» ᴛɪᴍᴇ ʟɪᴍɪᴛ ʀᴇᴀᴄʜᴇᴅ ᴏғ 10 ᴍɪɴᴜᴛᴇs.\n\nᴩʟᴇᴀsᴇ sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ sᴇssɪᴏɴ ᴀɢᴀɪɴ.")
-        return
-          #cambiar  a mas facil de poner
-     phone_code = phone_code_msg.text.replace(" ", "")
-     try:
-        await client.sign_in(phone_number, code.phone_code_hash, phone_code)
-     except (PhoneCodeInvalid, PhoneCodeInvalid1):
-        await msg.reply("» ᴛʜᴇ ᴏᴛᴩ ʏᴏᴜ'ᴠᴇ sᴇɴᴛ ɪs **ᴡʀᴏɴɢ.**\n\nᴩʟᴇᴀsᴇ sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ sᴇssɪᴏɴ ᴀɢᴀɪɴ.")
-        return
-     except (PhoneCodeExpired, PhoneCodeExpired1):
-        await msg.reply("» ᴛʜᴇ ᴏᴛᴩ ʏᴏᴜ'ᴠᴇ sᴇɴᴛ ɪs **ᴇxᴩɪʀᴇᴅ.**\n\nᴩʟᴇᴀsᴇ sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ sᴇssɪᴏɴ ᴀɢᴀɪɴ.")
-        return
-     except (SessionPasswordNeeded, SessionPasswordNeeded1):
-        try:
-           two_step_msg = await bot.ask(user_id, "» ᴩʟᴇᴀsᴇ ᴇɴᴛᴇʀ ʏᴏᴜʀ **ᴛᴡᴏ sᴛᴇᴩ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ** ᴩᴀssᴡᴏʀᴅ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ.", filters=filters.text, timeout=300)
-        except TimeoutError:
-           await msg.reply("» ᴛɪᴍᴇ ʟɪᴍɪᴛ ʀᴇᴀᴄʜᴇᴅ ᴏғ 5 ᴍɪɴᴜᴛᴇs.\n\nᴩʟᴇᴀsᴇ sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ sᴇssɪᴏɴ ᴀɢᴀɪɴ.")
-           return
-        try:
-           password = two_step_msg.text
-           await client.check_password(password=password)
-           if await cancelled(api_id_msg):
-                 return
-        except (PasswordHashInvalid, PasswordHashInvalid1):
-           await two_step_msg.reply("» ᴛʜᴇ ᴩᴀssᴡᴏʀᴅ ʏᴏᴜ'ᴠᴇ sᴇɴᴛ ɪs ᴡʀᴏɴɢ.\n\nᴩʟᴇᴀsᴇ sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ sᴇssɪᴏɴ ᴀɢᴀɪɴ.")
-           return
-      
-     string_session = await client.export_session_string()
-     await client.disconnect()
-
-
-
-
-
-     
-     try:
-       client = await start_clone_bot(self.client(string_session, True), True)
+       client = await start_clone_bot(self.client(msg.text, True), True)
      except Exception as e:
-       await bot.send_message(f"<b>User Bot Error :</b> `{e}`")
+       await msg.reply_text(f"<b>User Bot Error :</b> `{e}`")
      user = client.me
      details = {
        'id': user.id,
        'is_bot': False,
        'user_id': user_id,
        'name': user.first_name,
-       'session': session_str.text,
+       'session': msg.text,
        'username': user.username
      }
      await db.add_bot(details)
@@ -291,21 +242,8 @@ def parse_buttons(text, markup=True):
 
 
 
-async def cancelled(msg):
-    if "/cancel" in msg.text:
-        await msg.reply("**» ᴄᴀɴᴄᴇʟʟᴇᴅ ᴛʜᴇ ᴏɴɢᴏɪɴɢ sᴛʀɪɴɢ ɢᴇɴᴇʀᴀᴛɪᴏɴ ᴩʀᴏᴄᴇss !**")
-        return True
-    elif "/restart" in msg.text:
-        await msg.reply("**» sᴜᴄᴄᴇssғᴜʟʟʏ ʀᴇsᴛᴀʀᴛᴇᴅ ᴛʜɪs ʙᴏᴛ ғᴏʀ ʏᴏᴜ !**")
-        return True
-    elif "/skip" in msg.text:
-        return False
-    elif msg.text.startswith("/"):  # Bot Commands
-        await msg.reply("**» ᴄᴀɴᴄᴇʟʟᴇᴅ ᴛʜᴇ ᴏɴɢᴏɪɴɢ sᴛʀɪɴɢ ɢᴇɴᴇʀᴀᴛɪᴏɴ ᴩʀᴏᴄᴇss !**", quote=True)
-        return True
-    else:
-        return False
-
-
-
-
+# Jishu Developer 
+# Don't Remove Credit 🥺
+# Telegram Channel @Madflix_Bots
+# Backup Channel @JishuBotz
+# Developer @JishuDeveloper
