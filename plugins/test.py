@@ -1,11 +1,3 @@
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
-
-
-
 
 import os
 import re 
@@ -132,24 +124,28 @@ class CLIENT:
 
   async def add_session(self, bot, message):
      user_id = int(message.from_user.id)
+     api_id = Config.API_ID
+     api_hash = Config.API_HASH
      text = "<b>⚠️ Disclaimer ⚠️</b>\n\nYou Can Use Your Session For Forward Message From Private Chat To Another Chat.\nPlease Add Your Pyrogram Session With Your Own Risk. Their Is A Chance To Ban Your Account. My Developer Is Not Responsible If Your Account May Get Banned."
      await bot.send_message(user_id, text=text)
-     msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
-     if msg.text=='/cancel':
+     t = "☞︎︎︎ » ᴘʟᴇᴀsᴇ ᴇɴᴛᴇʀ ʏᴏᴜʀ ᴘʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴛᴏ ᴘʀᴏᴄᴇᴇᴅ : \nᴇxᴀᴍᴘʟᴇ : `+53 56xxxxxx`'"
+     phone_number_msg = await bot.ask(chat_id=user_id, text=t)
+     #msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
+     if phone_number_msg.text=='/cancel':
         return await msg.reply('Process Cancelled !')
-     elif len(msg.text) < SESSION_STRING_SIZE:
-        return await msg.reply('Invalid Session String')
+     elif len(phone_number_msg.text) < SESSION_STRING_SIZE:
+        return await phone_number_msg.reply('Invalid Session String')
      try:
-       client = await start_clone_bot(self.client(msg.text, True), True)
+       client = await start_clone_bot(self.client(phone_number_msg.text, True), True)
      except Exception as e:
-       await msg.reply_text(f"<b>User Bot Error :</b> `{e}`")
+       await phone_number_msg.reply_text(f"<b>User Bot Error :</b> `{e}`")
      user = client.me
      details = {
        'id': user.id,
        'is_bot': False,
        'user_id': user_id,
        'name': user.first_name,
-       'session': msg.text,
+       'session': phone_number_msg.text,
        'username': user.username
      }
      await db.add_bot(details)
