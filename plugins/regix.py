@@ -199,10 +199,7 @@ async def edit(msg, title, status, sts):
 
     text = TEXT.format(i.fetched, total_files_left, total_files_forwarded, i.deleted, i.duplicate, i.skip, status, percentage, estimated_total_time)
     if status in ["cancelled", "completed"]:
-        button.append(
-            [InlineKeyboardButton('💝 ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ 💝', url='https://t.me/deathchatting_world'),
-            InlineKeyboardButton('💠 ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ 💠', url='https://t.me/deathking_botworld')]
-        )
+        return
     else:
         button.append([InlineKeyboardButton('• Cancel', 'terminate_frwd')])
     await msg_edit(msg, text, InlineKeyboardMarkup(button))
