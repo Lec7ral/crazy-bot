@@ -1,12 +1,3 @@
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
-
-
-
-
 import os
 import sys
 import asyncio 
@@ -18,15 +9,8 @@ from pyrogram import Client, filters, enums, __version__ as pyrogram_version
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument
 
 main_buttons = [[
-        InlineKeyboardButton('❣️ ᴅᴇᴠᴇʟᴏᴘᴇʀ ❣️', url='https://t.me/TryToLiveAlon')
-        ],[
-        InlineKeyboardButton('📜 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ ', url='https://t.me/deathchatting_world'),
-        InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ  ', url='https://t.me/deathking_botworld')
-        ],[
-        InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help'),
+        InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')],[
         InlineKeyboardButton('🎓 ᴀʙᴏᴜᴛ ', callback_data='about')
-        ],[
-        InlineKeyboardButton('📡ᴍᴏᴠɪᴇꜱ ᴄʜᴀɴɴᴇʟ', url='https://t.me/deathmovie_hub')
         ]]
 
 
@@ -127,12 +111,3 @@ async def status(bot, query):
     )
     
 
-
-
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
