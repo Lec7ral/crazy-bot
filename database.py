@@ -1,15 +1,9 @@
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
-
-
 
 from os import environ 
 from config import Config
 import motor.motor_asyncio
 from pymongo import MongoClient
+from datetime import datetime, timedelta
 
 async def mongodb_version():
     x = MongoClient(Config.DB_URL)
@@ -26,7 +20,7 @@ class Database:
         self.nfy = self.db.notify
         self.chl = self.db.channels 
         
-    def new_user(self, id, name):
+    def new_user(self, id, name, plan_type="FREE", expire_plan=None, message_ids=None):
         return dict(
             id = id,
             name = name,
@@ -34,10 +28,13 @@ class Database:
                 is_banned=False,
                 ban_reason="",
             ),
+            plan_type=plan_type,  # Nuevo campo
+            expire_plan=expire_plan,     # Nuevo campo
+            message_ids=message_ids or []  # Nuevo campo como lista vacía por defecto
         )
       
-    async def add_user(self, id, name):
-        user = self.new_user(id, name)
+    async def add_user(self, id, name, plan_type="FREE", expire_plan=None):
+        user = self.new_user(id, name, plan_type, expire_plan)
         await self.col.insert_one(user)
     
     async def is_user_exist(self, id):
@@ -88,6 +85,73 @@ class Database:
         b_users = [user['id'] async for user in users]
         return b_users
 
+    #---------------------------Messages---------------------#
+
+    
+    async def add_message_id(self, user_id, message_id):
+    await self.col.update_one(
+        {'id': int(user_id)},
+        {'$addToSet': {'message_ids': message_id}}  # Usa $addToSet para evitar duplicados
+    )
+    async def get_message_ids(self, user_id):
+    user = await self.col.find_one({'id': int(user_id)})
+    if user:
+        return user.get('message_ids', [])
+    return []
+    async def remove_message_id(self, user_id, message_id):
+    await self.col.update_one(
+        {'id': int(user_id)},
+        {'$pull': {'message_ids': message_id}}  # Usa $pull para eliminar el ID especificado
+    )
+
+#------------------------Plan------------------------------
+
+    async def update_plan_type(self, user_id, plan_type):
+    await self.col.update_one(
+        {'id': int(user_id)},
+        {'$set': {'plan_type': plan_type}}  # Asegúrate de usar plan_type
+    )
+    
+    async def get_plan_type(self, user_id):
+    user = await self.col.find_one({'id': int(user_id)})
+    if user:
+        return user['plan_type']
+    else:
+        return None
+
+    async def update_expire_plan(self, user_id, plan_type, extend=False):
+    # Validar que el tipo de plan sea válido
+    valid_plans = ["FREE", "PREMIUM1", "PREMIUM2", "PREMIUM3"]
+    if plan_type not in valid_plans:
+        raise ValueError("Tipo de plan inválido")
+
+    user = await self.col.find_one({'id': int(user_id)})
+    
+    if user:
+        current_expire_plan = user.get('expire_plan')
+        
+        if plan_type == "FREE":
+            new_expire_plan = None
+        elif plan_type in ["PREMIUM1", "PREMIUM2", "PREMIUM3"]:
+            days_mapping = {
+                "PREMIUM1": 7,
+                "PREMIUM2": 7,
+                "PREMIUM3": 30
+            }
+            if extend and current_expire_plan:
+                new_expire_plan = current_expire_plan + timedelta(days=30)
+            else:
+                new_expire_plan = datetime.now() + timedelta(days=days_mapping[plan_type])
+        
+        await self.col.update_one(
+            {'id': int(user_id)},
+            {'$set': {'expire_plan': new_expire_plan}}
+        )
+    else:
+        raise ValueError("Usuario no encontrado.")
+#----------------------Config---------------------------
+
+    
     async def update_configs(self, id, configs):
         await self.col.update_one({'id': int(id)}, {'$set': {'configs': configs}})
          
@@ -180,13 +244,3 @@ db = Database(Config.DB_URL, Config.DB_NAME)
 
 
 
-
-
-
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
