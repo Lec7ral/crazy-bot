@@ -17,6 +17,25 @@ from translation import Translation
 
 from typing import Union, Optional, AsyncGenerator
 
+
+from pyrogram.errors import (
+    ApiIdInvalid,
+    PhoneNumberInvalid,
+    PhoneCodeInvalid,
+    PhoneCodeExpired,
+    SessionPasswordNeeded,
+    PasswordHashInvalid
+)
+
+from pyrogram.errors import (
+    ApiIdInvalid as ApiIdInvalid1,
+    PhoneNumberInvalid as PhoneNumberInvalid1,
+    PhoneCodeInvalid as PhoneCodeInvalid1,
+    PhoneCodeExpired as PhoneCodeExpired1,
+    SessionPasswordNeeded as SessionPasswordNeeded1,
+    PasswordHashInvalid as PasswordHashInvalid1
+)
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -132,9 +151,27 @@ class CLIENT:
      phone_number_msg = await bot.ask(chat_id=user_id, text=t)
      #msg = await bot.ask(chat_id=user_id, text="<b>Send your pyrogram session.\nget it from @StringGenFatherBot - cancel the process</b>")
      if phone_number_msg.text=='/cancel':
-        return await msg.reply('Process Cancelled !')
-     elif len(phone_number_msg.text) < SESSION_STRING_SIZE:
-        return await phone_number_msg.reply('Invalid Session String')
+        return await phone_number_msg.reply('Process Cancelled !')
+     phone_number = phone_number_msg.text
+     await phone_number_msg.reply("» ᴛʀʏɪɴɢ ᴛᴏ sᴇɴᴅ ᴏᴛᴩ ᴀᴛ ᴛʜᴇ ɢɪᴠᴇɴ ɴᴜᴍʙᴇʀ...")
+     client = Client(name="user", api_id=api_id, api_hash=api_hash, in_memory=True)
+     await client.connect()
+     try:
+        code = await client.send_code(phone_number)
+     except (PhoneNumberInvalid, PhoneNumberInvalid1):
+        await phone_number_msg.reply("» ᴛʜᴇ **ᴩʜᴏɴᴇ_ɴᴜᴍʙᴇʀ** ʏᴏᴜ'ᴠᴇ sᴇɴᴛ ᴅᴏᴇsɴ'ᴛ ʙᴇʟᴏɴɢ ᴛᴏ ᴀɴʏ ᴛᴇʟᴇɢʀᴀᴍ ᴀᴄᴄᴏᴜɴᴛ.")
+        return
+     try:
+        phone_code_msg = None #cambiar  a mas facil de poner
+        phone_code_msg = await bot.ask(user_id, "» ᴩʟᴇᴀsᴇ sᴇɴᴅ ᴛʜᴇ **ᴏᴛᴩ** ᴛʜᴀᴛ ʏᴏᴜ'ᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ ғʀᴏᴍ ᴛᴇʟᴇɢʀᴀᴍ ᴏɴ ʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ.\nɪғ ᴏᴛᴩ ɪs `12345`, **ᴩʟᴇᴀsᴇ sᴇɴᴅ ɪᴛ ᴀs** `1 2 3 4 5`.", filters=filters.text, timeout=600)
+        if await cancelled(phone_code_msg):
+           return
+     except TimeoutError:
+        await phone_number_msg.reply("» ᴛɪᴍᴇ ʟɪᴍɪᴛ ʀᴇᴀᴄʜᴇᴅ ᴏғ 10 ᴍɪɴᴜᴛᴇs.\n\nᴩʟᴇᴀsᴇ sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ sᴇssɪᴏɴ ᴀɢᴀɪɴ.")
+        return
+
+     
+
      try:
        client = await start_clone_bot(self.client(phone_number_msg.text, True), True)
      except Exception as e:
