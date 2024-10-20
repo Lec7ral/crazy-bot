@@ -1,12 +1,3 @@
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Backup Channel @JishuBotz
-# Developer @JishuDeveloper
-
-
-
-
 import asyncio 
 import time, datetime 
 from database import db 
