@@ -57,15 +57,15 @@ async def start_user(client, message):
         text = Translation.START_TXT.format(user.mention)
         await message.reply_text(
             text=text,
-            reply_markup=reply_markup_settings,
+            reply_markup=reply_markup,
             quote=True
         )
     else:
         text = Translation.START_TXT_USER.format(user.mention)
         await message.reply_text(
             text=text,
-            reply_markup=reply_markup,
-            quote=True]
+            reply_markup=reply_markup_settings,
+            quote=True
         )
         
 
