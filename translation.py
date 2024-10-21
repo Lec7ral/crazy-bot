@@ -16,6 +16,8 @@ class Translation(object):
  START_TXT_USER = """"<b>👋 ¡Hola, {}!</b>
        Bienvenido al Panel de Administración. Aquí podrás gestionar configuraciones y funciones.
        🔧 **Funciones:**
+       ► ▶️ Iniciar - Reanuda el reenvio de mensajes a los grupos
+       ► 🛑 Stop - Deja de reenviar mensajes a los grupos
        ► 🤖 Userbot - Admisnistrar sesión de userbot
        ► 💬 Mensajes - Gestionar los mensajes
        ► ⚙️ Ajustes - Ajustes tiempo de reenvio(No disponible en plan FREE)
