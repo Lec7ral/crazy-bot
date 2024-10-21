@@ -7,6 +7,7 @@ from platform import python_version
 from translation import Translation
 from pyrogram import Client, filters, enums, __version__ as pyrogram_version
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument, BotCommand
+from .test import settings_query
 
 main_buttons = [[
         InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')],[
@@ -15,14 +16,31 @@ main_buttons = [[
 
 
 
-#===================Start Function===================#
+#===================Admin Start Function===================#
 
-@Client.on_message(filters.private & filters.command(['start']))
+@Client.on_message(filters.private & filters.command(['start']) & filters.user(Config.OWNER_ID))
 async def start(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
     reply_markup = InlineKeyboardMarkup(main_buttons)
+    jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
+    await asyncio.sleep(2)
+    await jishubotz.delete()
+    text=Translation.START_TXT_ADMIN.format(user.mention)
+    await message.reply_text(
+        text=text,
+        reply_markup=reply_markup,
+        quote=True
+    )
+
+#==================User Start Function===============#
+@Client.on_message(filters.private & filters.command(['start']))
+async def start(client, message):
+    user = message.from_user
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, user.first_name)
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='settings#adduserbot')]]),
     jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
     await asyncio.sleep(2)
     await jishubotz.delete()
@@ -32,7 +50,7 @@ async def start(client, message):
         reply_markup=reply_markup,
         quote=True
     )
-
+        
 
 
 #==================Restart Function==================#
