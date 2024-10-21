@@ -72,7 +72,13 @@ class Bot(Client):
         await super().stop()
         logging.info(msg)
 
-
+    async def set_commands():
+        commands = [
+            BotCommand("start", "Inicia el bot"),
+            BotCommand("help", "Muestra la ayuda"),
+            BotCommand("info", "Muestra información"),
+        ]
+        await app.SetBotCommands(commands)
 
 
 
