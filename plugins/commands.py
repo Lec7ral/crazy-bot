@@ -8,6 +8,7 @@ from translation import Translation
 from pyrogram import Client, filters, enums, __version__ as pyrogram_version
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument, BotCommand
 from .settings import settings_query
+from .userSettings
 
 main_buttons = [[
         InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')],[
@@ -41,15 +42,32 @@ async def start_user(client, message):
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='settings#adduserbot')]])
+    reply_markup_settings = InlineKeyboardMarkup(
+            [[
+            InlineKeyboardButton('▶️ Iniciar', callback_data=''),
+            InlineKeyboardButton('🛑 Stop', callback_data='')
+            ],[
+            InlineKeyboardButton('⚙️ Ajustes', callback_data='user_settings')
+            ],[
+            InlineKeyboardButton('💲 Planes', callback_data='')
+            ]]
+        ))
     jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
     await asyncio.sleep(2)
     await jishubotz.delete()
-    text=Translation.START_TXT.format(user.mention)
-    await message.reply_text(
-        text=text,
-        reply_markup=reply_markup,
-        quote=True
-    )
+    if not await db.get_bot(user.id):
+        text = Translation.START_TXT.format(user.mention)
+        await message.reply_text(
+            text=text,
+            reply_markup=reply_markup_settings,
+            quote=True
+        )
+    else:
+        text = Translation.START_TXT_USER.format(user.mention)
+        await message.reply_text(
+            text=text,
+            reply_markup=reply_markup,
+            quote=True
         
 
 
@@ -83,7 +101,11 @@ async def helpcb(bot, query):
             InlineKeyboardButton('↩ ʙᴀᴄᴋ', callback_data='back')
             ]]
         ))
-
+@Client.on_callback_query(filters.regex(r'^user_settings'))
+async def user_settings(bot, query):
+    await query.message.edit_text(
+        text = "<b>Change Your Settings As Your Wish</b>"
+        
 
 
 @Client.on_callback_query(filters.regex(r'^how_to_use'))
