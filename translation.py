@@ -13,7 +13,7 @@ class Translation(object):
 
  <b> Que vamos a hacer hoy?</b>
 """
- START_TXT_USER = """"<b>👋 ¡Hola, {}!</b>
+  START_TXT_USER = """"<b>👋 ¡Hola, {}!</b>
        Bienvenido al Panel de Administración. Aquí podrás gestionar configuraciones y funciones.
        🔧 **Funciones:**
        ► ▶️ Iniciar - Reanuda el reenvio de mensajes a los grupos
