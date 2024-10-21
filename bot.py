@@ -51,7 +51,7 @@ class Bot(Client):
         success = failed = 0
         users = await db.get_all_frwd()
         
-        await app.set_bot_commands([
+        await app.set_my_commands([
             BotCommand("start", "Start the bot"),
             BotCommand("settings", "Bot settings")])
         
