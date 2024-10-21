@@ -45,7 +45,7 @@ async def start_user(client, message):
             InlineKeyboardButton('▶️ Iniciar', callback_data=''),
             InlineKeyboardButton('🛑 Stop', callback_data='')
             ],[
-            InlineKeyboardButton('⚙️ Ajustes', callback_data='user_settings')
+            InlineKeyboardButton('⚙️ Ajustes', callback_data='userSettings#main')
             ],[
             InlineKeyboardButton('💲 Planes', callback_data='')
             ]]
@@ -99,12 +99,7 @@ async def helpcb(bot, query):
             ],[
             InlineKeyboardButton('↩ ʙᴀᴄᴋ', callback_data='back')
             ]]
-        ))
-@Client.on_callback_query(filters.regex(r'^user_settings'))
-async def user_settings(bot, query):
-    await query.message.edit_text(
-        text = "<b>Change Your Settings As Your Wish</b>"
-        
+        ))      
 
 
 @Client.on_callback_query(filters.regex(r'^how_to_use'))
