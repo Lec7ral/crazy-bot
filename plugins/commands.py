@@ -7,7 +7,7 @@ from platform import python_version
 from translation import Translation
 from pyrogram import Client, filters, enums, __version__ as pyrogram_version
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument, BotCommand
-from .test import settings_query
+from .settings import settings_query
 
 main_buttons = [[
         InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')],[
