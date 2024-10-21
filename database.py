@@ -89,66 +89,66 @@ class Database:
 
     
     async def add_message_id(self, user_id, message_id):
-    await self.col.update_one(
-        {'id': int(user_id)},
-        {'$addToSet': {'message_ids': message_id}}  # Usa $addToSet para evitar duplicados
-    )
+        await self.col.update_one(
+            {'id': int(user_id)},
+            {'$addToSet': {'message_ids': message_id}}  # Usa $addToSet para evitar duplicados
+        )
     async def get_message_ids(self, user_id):
-    user = await self.col.find_one({'id': int(user_id)})
-    if user:
-        return user.get('message_ids', [])
-    return []
-    async def remove_message_id(self, user_id, message_id):
-    await self.col.update_one(
-        {'id': int(user_id)},
-        {'$pull': {'message_ids': message_id}}  # Usa $pull para eliminar el ID especificado
-    )
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user.get('message_ids', [])
+        return []
+        async def remove_message_id(self, user_id, message_id):
+        await self.col.update_one(
+            {'id': int(user_id)},
+            {'$pull': {'message_ids': message_id}}  # Usa $pull para eliminar el ID especificado
+        )
 
 #------------------------Plan------------------------------
 
     async def update_plan_type(self, user_id, plan_type):
-    await self.col.update_one(
-        {'id': int(user_id)},
-        {'$set': {'plan_type': plan_type}}  # Asegúrate de usar plan_type
-    )
-    
-    async def get_plan_type(self, user_id):
-    user = await self.col.find_one({'id': int(user_id)})
-    if user:
-        return user['plan_type']
-    else:
-        return None
-
-    async def update_expire_plan(self, user_id, plan_type, extend=False):
-    # Validar que el tipo de plan sea válido
-    valid_plans = ["FREE", "PREMIUM1", "PREMIUM2", "PREMIUM3"]
-    if plan_type not in valid_plans:
-        raise ValueError("Tipo de plan inválido")
-
-    user = await self.col.find_one({'id': int(user_id)})
-    
-    if user:
-        current_expire_plan = user.get('expire_plan')
-        
-        if plan_type == "FREE":
-            new_expire_plan = None
-        elif plan_type in ["PREMIUM1", "PREMIUM2", "PREMIUM3"]:
-            days_mapping = {
-                "PREMIUM1": 7,
-                "PREMIUM2": 7,
-                "PREMIUM3": 30
-            }
-            if extend and current_expire_plan:
-                new_expire_plan = current_expire_plan + timedelta(days=30)
-            else:
-                new_expire_plan = datetime.now() + timedelta(days=days_mapping[plan_type])
-        
         await self.col.update_one(
             {'id': int(user_id)},
-            {'$set': {'expire_plan': new_expire_plan}}
+            {'$set': {'plan_type': plan_type}}  # Asegúrate de usar plan_type
         )
-    else:
-        raise ValueError("Usuario no encontrado.")
+    
+    async def get_plan_type(self, user_id):
+        user = await self.col.find_one({'id': int(user_id)})
+        if user:
+            return user['plan_type']
+        else:
+            return None
+
+    async def update_expire_plan(self, user_id, plan_type, extend=False):
+        # Validar que el tipo de plan sea válido
+        valid_plans = ["FREE", "PREMIUM1", "PREMIUM2", "PREMIUM3"]
+        if plan_type not in valid_plans:
+            raise ValueError("Tipo de plan inválido")
+    
+        user = await self.col.find_one({'id': int(user_id)})
+        
+        if user:
+            current_expire_plan = user.get('expire_plan')
+            
+            if plan_type == "FREE":
+                new_expire_plan = None
+            elif plan_type in ["PREMIUM1", "PREMIUM2", "PREMIUM3"]:
+                days_mapping = {
+                    "PREMIUM1": 7,
+                    "PREMIUM2": 7,
+                    "PREMIUM3": 30
+                }
+                if extend and current_expire_plan:
+                    new_expire_plan = current_expire_plan + timedelta(days=30)
+                else:
+                    new_expire_plan = datetime.now() + timedelta(days=days_mapping[plan_type])
+            
+            await self.col.update_one(
+                {'id': int(user_id)},
+                {'$set': {'expire_plan': new_expire_plan}}
+            )
+        else:
+            raise ValueError("Usuario no encontrado.")
 #----------------------Config---------------------------
 
     
