@@ -65,7 +65,8 @@ async def start_user(client, message):
         await message.reply_text(
             text=text,
             reply_markup=reply_markup,
-            quote=True
+            quote=True]
+        )
         
 
 
