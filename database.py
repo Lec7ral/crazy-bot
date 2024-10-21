@@ -98,7 +98,7 @@ class Database:
         if user:
             return user.get('message_ids', [])
         return []
-        async def remove_message_id(self, user_id, message_id):
+    async def remove_message_id(self, user_id, message_id):
         await self.col.update_one(
             {'id': int(user_id)},
             {'$pull': {'message_ids': message_id}}  # Usa $pull para eliminar el ID especificado
