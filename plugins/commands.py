@@ -51,7 +51,7 @@ async def start_user(client, message):
             ],[
             InlineKeyboardButton('💲 Planes', callback_data='')
             ]]
-        ))
+        )
     jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
     await asyncio.sleep(2)
     await jishubotz.delete()
