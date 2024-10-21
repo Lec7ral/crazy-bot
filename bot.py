@@ -51,9 +51,11 @@ class Bot(Client):
         success = failed = 0
         users = await db.get_all_frwd()
         
-        await app.set_my_commands([
+        commands = [
             BotCommand("start", "Start the bot"),
-            BotCommand("settings", "Bot settings")])
+            BotCommand("settings", "Bot settings")
+        ]
+        await self.set_commands(commands)  # Llama al método set_commands() en el objeto self
         
         async for user in users:
            chat_id = user['user_id']
