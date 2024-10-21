@@ -6,13 +6,19 @@ from config import Config, temp
 from platform import python_version
 from translation import Translation
 from pyrogram import Client, filters, enums, __version__ as pyrogram_version
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaDocument, BotCommand
 
 main_buttons = [[
         InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')],[
         InlineKeyboardButton('🎓 ᴀʙᴏᴜᴛ ', callback_data='about')
         ]]
-
+async def set_commands():
+    commands = [
+        BotCommand("start", "Inicia el bot"),
+        BotCommand("help", "Muestra la ayuda"),
+        BotCommand("info", "Muestra información"),
+    ]
+    await app.set_my_commands(commands)
 
 
 #===================Start Function===================#
