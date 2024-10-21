@@ -3,17 +3,25 @@ import os
 from config import Config
 
 class Translation(object):
-  START_TXT = """<b>𝚁𝚎𝚗𝚟𝚒𝚎𝚗𝚍𝚘 𝚊𝚕 𝚋𝚘𝚝, {}!</b>
+  START_TXT = """<b>👋 𝚁𝚎𝚗𝚟𝚒𝚎𝚗𝚍𝚘 𝚊𝚕 𝚋𝚘𝚝, {}!</b>
 
 <i>𝙿𝚊𝚛𝚊 𝚛𝚎𝚎𝚗𝚟𝚒𝚊𝚛 𝚖𝚎𝚜𝚊𝚓𝚎𝚜 𝚎𝚗 𝚝𝚞𝚜 𝚐𝚛𝚞𝚙𝚘𝚜 𝚌𝚘𝚖𝚘 𝚜𝚒 𝚏𝚞𝚎𝚜 𝚝𝚞́, 𝚍𝚎𝚋𝚎𝚜 𝚒𝚗𝚒𝚌𝚒𝚊𝚛 𝚜𝚎𝚜𝚒𝚘́𝚗 𝚙𝚛𝚒𝚖𝚎𝚛𝚘.
 
-𝙿𝚞𝚎𝚍𝚎𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚛 𝚝𝚞 𝚒𝚗𝚏𝚘𝚛𝚖𝚊𝚌𝚒𝚘́𝚗 𝚖𝚊́s 𝚊𝚕𝚊𝚍𝚎 𝚚𝚞𝚎 𝚚𝚞𝚎𝚛𝚊𝚜.</i>
+𝙿𝚞𝚎𝚍𝚎𝚜 𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚛 𝚝𝚞 𝚒𝚗𝚏𝚘𝚛𝚖𝚊𝚌𝚒𝚘́𝚗 𝚖𝚊́𝚜 𝚊𝚍𝚎𝚕𝚊𝚗𝚝𝚎 𝚌𝚞𝚊𝚗𝚍𝚘 𝚚𝚞𝚒𝚎𝚛𝚊𝚜.</i>
 """
-  START_TXT_ADMIN = """<b> Hola Master {}!</b>
+  START_TXT_ADMIN = """<b> 👋 Hola Master {}!</b>
 
  <b> Que vamos a hacer hoy?</b>
 """
-
+ START_TXT_USER = """"<b>👋 ¡Hola, {}!</b>
+       Bienvenido al Panel de Administración. Aquí podrás gestionar configuraciones y funciones.
+       🔧 **Funciones:**
+       ► 🤖 Userbot - Admisnistrar sesión de userbot
+       ► 💬 Mensajes - Gestionar los mensajes
+       ► ⚙️ Ajustes - Ajustes tiempo de reenvio(No disponible en plan FREE)
+       ► 💲 Planes - Comprar un plan
+       <b>Selecciona una opción del menú para comenzar.</b>
+ """
 
   HELP_TXT = """<b><u>🔆 HELP</b></u>
 
