@@ -19,7 +19,7 @@ main_buttons = [[
 #===================Admin Start Function===================#
 
 @Client.on_message(filters.private & filters.command(['start']) & filters.user(Config.OWNER_ID))
-async def start(client, message):
+async def start_admin(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
@@ -36,11 +36,11 @@ async def start(client, message):
 
 #==================User Start Function===============#
 @Client.on_message(filters.private & filters.command(['start']))
-async def start(client, message):
+async def start_user(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='settings#adduserbot')]]),
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='settings#adduserbot')]])
     jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
     await asyncio.sleep(2)
     await jishubotz.delete()
