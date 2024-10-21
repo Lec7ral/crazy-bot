@@ -11,6 +11,7 @@ from pyrogram.errors import FloodWait
 from aiohttp import web
 from plugins import web_server
 from os import environ
+from pyrogram.types import BotCommand
 
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
@@ -49,6 +50,11 @@ class Bot(Client):
         logging.info(text)
         success = failed = 0
         users = await db.get_all_frwd()
+        
+        await app.set_bot_commands([
+            BotCommand("start", "Start the bot"),
+            BotCommand("settings", "Bot settings")])
+        
         async for user in users:
            chat_id = user['user_id']
            try:
@@ -72,13 +78,7 @@ class Bot(Client):
         await super().stop()
         logging.info(msg)
 
-    async def set_commands():
-        commands = [
-            BotCommand("start", "Inicia el bot"),
-            BotCommand("help", "Muestra la ayuda"),
-            BotCommand("info", "Muestra información"),
-        ]
-        await app.SetBotCommands(commands)
+    
 
 
 
