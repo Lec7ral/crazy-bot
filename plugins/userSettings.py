@@ -63,15 +63,21 @@ elif type == "addchannel":
         
         # Obtener grupos del usuario
         groups = []
-        async with Client("my_account", api_id=Config.API_ID, api_hash=Config.API_HASH) as app:
-            async for dialog in app.get_dialogs():
-                if dialog.chat.type in ["group", "supergroup"]:
-                    groups.append({
-                        "id": dialog.chat.id,
-                        "title": dialog.chat.title,
-                        "username": dialog.chat.username or "Private",
-                        "members_count": dialog.chat.members_count
-                    })
+        async for dialog in CLIENT.get_dialogs():
+            if dialog.chat.type in ["group", "supergroup"]:
+                groups.append({
+                    "id": dialog.chat.id,
+                    "title": dialog.chat.title,
+                    "username": dialog.chat.username or "Private",
+                    "members_count": dialog.chat.members_count
+                })
+        
+        if not groups:
+            logging.warning("No se encontraron grupos.")
+            return await text.edit_text(
+                "No groups found!",
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )
         
         if not groups:
             logging.warning("No se encontraron grupos.")
