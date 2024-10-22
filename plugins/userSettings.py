@@ -50,41 +50,56 @@ async def user_settings_query(bot, query):
        reply_markup=InlineKeyboardMarkup(buttons))
    
   elif type=="addchannel":                                                    #modificar esat funcion
-        await query.message.delete()
-        try:
-            text = await bot.send_message(user_id, "<b><u>Establecer chat de destino</u></b>\n\nReenviar un mensaje desde su grupo de destino\n/cancel - Para cancelar este proceso")
-            chat_ids = await bot.listen(chat_id=user_id, timeout=300)
+    await query.message.delete()
+    logger.info("Iniciando el proceso para agregar un grupo.")
+    
+    try:
+        text = await bot.send_message(user_id, "<b><u>Set Target Group</u></b>\n\nForward A Message From Your Target Group\n/cancel - To Cancel This Process")
+        logger.info("Mensaje de instrucción enviado al usuario.")
+        
+        group_message = await bot.listen(chat_id=user_id, timeout=300)
+        logger.info("Esperando un mensaje reenviado del usuario.")
+        
+        if group_message.text == "/cancel":
+            await group_message.delete()
+            logger.info("El usuario canceló el proceso.")
+            return await text.edit_text(
+                "Process Canceled",
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )
+        
+        if not group_message.forward_date:
+            await group_message.delete()
+            logger.warning("El mensaje recibido no es un mensaje reenviado.")
+            return await text.edit_text("This Is Not A Forward Message")
+        
+        # Verificación del tipo de chat
+        if group_message.forward_from_chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
+            group_chat_id = group_message.forward_from_chat.id
+            group_title = group_message.forward_from_chat.title
+            group_username = group_message.forward_from_chat.username
+            group_username = "@" + group_username if group_username else "private"
             
-            if chat_ids.text == "/cancel":
-                await chat_ids.delete()
-                return await text.edit_text(
-                    "Process Canceled",
-                    reply_markup=InlineKeyboardMarkup(buttons)
-                )
+            logger.info(f"Grupo identificado: ID={group_chat_id}, Título={group_title}, Usuario={group_username}")
+            group = await db.channel(user_id, group_chat_id, group_title, group_username)
+            await group_message.delete()
             
-            if not chat_ids.forward_date:
-                await chat_ids.delete()
-                return await text.edit_text("This Is Not A Forward Message")
-            
-            # Aquí se captura el ID y el título del grupo
-            if chat_ids.forward_from_chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-                chat_id = chat_ids.forward_from_chat.id
-                title = chat_ids.forward_from_chat.title
-                username = chat_ids.forward_from_chat.username
-                username = "@" + username if username else "private"
-            else:
-                await chat_ids.delete()
-                return await text.edit_text("Please forward a message from a valid group.")
-            
-            # Agregar el grupo a la base de datos
-            group = await db.add_channel(user_id, chat_id, title, username)  # Cambia a add_group
-            await chat_ids.delete()
+            logger.info("Grupo agregado a la base de datos.")
             await text.edit_text(
                 "Successfully Updated" if group else "This Group Already Added",
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
-        except asyncio.exceptions.TimeoutError:
-            await text.edit_text('Process Has Been Automatically Cancelled', reply_markup=InlineKeyboardMarkup(buttons))
+        else:
+            await group_message.delete()
+            logger.warning("El mensaje reenviado no proviene de un grupo.")
+            return await text.edit_text("Please Forward A Message From A Group")
+    
+    except asyncio.exceptions.TimeoutError:
+        logger.error("El proceso ha sido cancelado automáticamente debido a un timeout.")
+        await text.edit_text('Process Has Been Automatically Cancelled', reply_markup=InlineKeyboardMarkup(buttons))
+    except Exception as e:
+        logger.exception("Se produjo un error inesperado durante el proceso.")
+        await text.edit_text("An error occurred. Please try again.")
              
   elif type=="adduserbot":
      await query.message.delete()
@@ -115,7 +130,7 @@ async def user_settings_query(bot, query):
      chat = await db.get_channel_details(user_id, chat_id)
      buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"userSettings#removechannel_{chat_id}")
                ],
-               [InlineKeyboardButton('↩ Back', callback_data="userSettings#channels")]]
+               [InlineKeyboardButton('↩ Back', callback_data="userSettings#groups")]]
      await query.message.edit_text(
         f"<b><u>📄 Channel Details</b></u>\n\n<b>Title :</b> <code>{chat['title']}</code>\n<b>Channel ID :</b> <code>{chat['chat_id']}</code>\n<b>Username :</b> {chat['username']}",
         reply_markup=InlineKeyboardMarkup(buttons))
