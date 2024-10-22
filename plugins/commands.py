@@ -14,12 +14,12 @@ main_buttons = [[
         InlineKeyboardButton('🎓 ᴀʙᴏᴜᴛ ', callback_data='about')
         ]]
 user_main_buttons = [[
-        InlineKeyboardButton('▶️ Iniciar', callback_data=''),
-        InlineKeyboardButton('🛑 Stop', callback_data='')
+        InlineKeyboardButton('▶️ Iniciar', callback_data='not_implemented'),
+        InlineKeyboardButton('🛑 Stop', callback_data='not_implemented')
         ],[
         InlineKeyboardButton('⚙️ Ajustes', callback_data='userSettings#main')
         ],[
-        InlineKeyboardButton('💲 Planes', callback_data='')
+        InlineKeyboardButton('💲 Planes', callback_data='not_implemented')
         ]]
         
 
