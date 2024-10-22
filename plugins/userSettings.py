@@ -62,8 +62,8 @@ async def user_settings_query(bot, query):
         
         # Obtener grupos del usuario
         groups = []
-        async for dialog in Client.iter_dialogs():
-            chat = dialog.chat
+        async for dialog in Client.get_dialogs():
+            chat = dialogs.chat
             if chat.type in ["group", "supergroup"]:
                 groups.append({
                     "id": chat.id,
@@ -79,12 +79,6 @@ async def user_settings_query(bot, query):
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
         
-        if not groups:
-            logging.warning("No se encontraron grupos.")
-            return await text.edit_text(
-                "No groups found!",
-                reply_markup=InlineKeyboardMarkup(buttons)
-            )
         
         # Crear botones para cada grupo
         group_buttons = []
