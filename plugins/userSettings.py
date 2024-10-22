@@ -53,8 +53,7 @@ async def user_settings_query(bot, query):
 
 
 
-
-elif type == "addchannel":
+  elif type == "addchannel":
     await query.message.delete()
     try:
         logging.info("Iniciando el proceso para listar grupos del usuario.")
