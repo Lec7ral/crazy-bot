@@ -24,7 +24,7 @@ async def settings_user(client, message):
 
     
 @Client.on_callback_query(filters.regex(r'^userSettings'))
-async def settings_query(bot, query):
+async def user_settings_query(bot, query):
   user_id = query.from_user.id
   i, type = query.data.split("#")
   buttons = [[InlineKeyboardButton('↩ Back', callback_data="userSettings#main")]]
