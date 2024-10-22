@@ -53,6 +53,7 @@ async def start_user(client, message):
     jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
     await asyncio.sleep(2)
     await jishubotz.delete()
+    await bot.send_message(user.id, user.id)    
     if not await db.is_bot_exist(user.id):
         text = Translation.START_TXT.format(user.mention)
         await message.reply_text(
