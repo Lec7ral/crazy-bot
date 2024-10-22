@@ -73,7 +73,7 @@ async def user_settings_query(bot, query):
             return await m.edit(e)
         async for dialog in client.get_dialogs():
             chat = dialog.chat
-            if chat.type in ["group", "supergroup"]:
+            if chat.type in ["GROUP", "SUPERGROUP"]:
                 groups.append({
                     "id": chat.id,
                     "title": chat.title,
