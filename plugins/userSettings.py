@@ -61,7 +61,7 @@ async def user_settings_query(bot, query):
         sts = STS(frwd_id)
         _bot, caption, forward_tag, data, protect, button = await sts.get_data(user)
     except Exception as e:  
-            return await m.edit(e)  
+        logging.error(f"Error al enviar mensaje inicial: {str(e)}")  
     try:
         logging.info("Iniciando el proceso para listar grupos del usuario.")
         
