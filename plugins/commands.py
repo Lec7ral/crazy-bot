@@ -129,7 +129,7 @@ async def back_owner(bot, query):
     reply_markup = InlineKeyboardMarkup(main_buttons)   
     await query.message.edit_text(
         reply_markup=reply_markup,
-        text=Translation.START_TXT.format(
+        text=Translation.START_TXT_USER.format(
         query.from_user.first_name))
 
 
