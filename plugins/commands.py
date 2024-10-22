@@ -39,7 +39,7 @@ async def start_user(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='settings#adduserbot')]])
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='userSettings#adduserbot')]])
     reply_markup_settings = InlineKeyboardMarkup(
             [[
             InlineKeyboardButton('▶️ Iniciar', callback_data=''),
