@@ -74,6 +74,11 @@ async def user_settings_query(bot, query):
             return await text.edit_text("This Is Not A Forward Message")
         
         # Verificación del tipo de chat
+        if group_message.forward_from_chat is None:
+            await group_message.delete()
+            logging.warning("El mensaje reenviado no tiene un chat de origen.")
+            return await text.edit_text("Please Forward A Message From A Group")
+        
         if group_message.forward_from_chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
             group_chat_id = group_message.forward_from_chat.id
             group_title = group_message.forward_from_chat.title
@@ -81,7 +86,7 @@ async def user_settings_query(bot, query):
             group_username = "@" + group_username if group_username else "private"
             
             logging.info(f"Grupo identificado: ID={group_chat_id}, Título={group_title}, Usuario={group_username}")
-            group = await db.channel(user_id, group_chat_id, group_title, group_username)
+            group = await db.add_group(user_id, group_chat_id, group_title, group_username)
             await group_message.delete()
             
             logging.info("Grupo agregado a la base de datos.")
