@@ -1,4 +1,4 @@
-
+import logging
 import asyncio 
 from database import db
 from config import Config
@@ -25,6 +25,7 @@ async def settings_user(client, message):
     
 @Client.on_callback_query(filters.regex(r'^userSettings'))
 async def user_settings_query(bot, query):
+  logging.info(f"Callback data received: {query.data}")
   user_id = query.from_user.id
   i, type = query.data.split("#")
   buttons = [[InlineKeyboardButton('↩ Back', callback_data="userSettings#main")]]
