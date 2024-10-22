@@ -68,52 +68,78 @@ async def user_settings_query(bot, query):
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
         
-        if not group_ids.forward_date:
-            await group_ids.delete()
-            logging.warning("El mensaje no es un mensaje reenviado.")
-            return await text.edit_text("This Is Not A Forward Message")
+        try:
+            # Verificar si es un mensaje reenviado
+            if not group_ids.forward_date:
+                await group_ids.delete()
+                logging.warning("El mensaje no es un mensaje reenviado.")
+                return await text.edit_text("This Is Not A Forward Message")
+            
+            # Verificar si existe forward_from_chat
+            if not group_ids.forward_from_chat:
+                await group_ids.delete()
+                logging.warning("No se puede obtener la información del chat de origen.")
+                return await text.edit_text("Cannot get source chat information")
         
-        # Verificamos si el mensaje proviene de un grupo
-        if group_ids.forward_from_chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
+            # Verificar si el mensaje proviene de un grupo
+            chat_type = group_ids.forward_from_chat.type
+            if chat_type not in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
+                await group_ids.delete()
+                logging.warning("El mensaje reenviado no proviene de un grupo.")
+                return await text.edit_text("This Is Not A Forwarded Message From A Group")
+        
+            # Obtener información del grupo
             group_id = group_ids.forward_from_chat.id
             title = group_ids.forward_from_chat.title
             username = group_ids.forward_from_chat.username
             username = "@" + username if username else "private"
             logging.info(f"Grupo identificado: ID={group_id}, Título={title}, Username={username}")
-
+        
             # Obtener el ID del último mensaje
             last_msg_id = group_ids.forward_from_message_id
             if last_msg_id is None:
+                await group_ids.delete()
                 logging.warning("No se pudo obtener el ID del último mensaje.")
                 return await text.edit_text("Could not retrieve the last message ID.")
             
-            # Construir el enlace del último mensaje
-            if group_id < 0:  # Para grupos, el ID es negativo
-                message_link = f"https://t.me/c/{abs(group_id)}/{last_msg_id}"
-            else:  # Para grupos públicos
-                message_link = f"https://t.me/{username}/{last_msg_id}"
+            # Construir el enlace del mensaje
+            message_link = (
+                f"https://t.me/c/{abs(group_id)}/{last_msg_id}" 
+                if group_id < 0 else 
+                f"https://t.me/{username.lstrip('@')}/{last_msg_id}"
+            )
             logging.info(f"Enlace del último mensaje: {message_link}")
-        else:
-            await group_ids.delete()
-            logging.warning("El mensaje reenviado no proviene de un grupo.")
-            return await text.edit_text("This Is Not A Forwarded Message From A Group")
-
-        group = await db.add_channel(user_id, group_id, title, username, message_link)
-        await group_ids.delete()
         
-        if group:
-            logging.info("Grupo agregado exitosamente a la base de datos.")
-            await text.edit_text("Successfully Updated", reply_markup=InlineKeyboardMarkup(buttons))
-        else:
-            logging.info("El grupo ya estaba agregado en la base de datos.")
-            await text.edit_text("This Group Already Added", reply_markup=InlineKeyboardMarkup(buttons))
-    
-    except asyncio.exceptions.TimeoutError:
-        logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
-        await text.edit_text('Process Has Been Automatically Cancelled', reply_markup=InlineKeyboardMarkup(buttons))
-    except Exception as e:
-        logging.error(f"Ocurrió un error: {e}")
-        await text.edit_text("An error occurred. Please try again later.", reply_markup=InlineKeyboardMarkup(buttons))
+            # Guardar en la base de datos
+            group = await db.add_channel(user_id, group_id, title, username, message_link)
+            await group_ids.delete()
+            
+            # Responder según el resultado
+            if group:
+                logging.info("Grupo agregado exitosamente a la base de datos.")
+                await text.edit_text(
+                    "Successfully Updated", 
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                )
+            else:
+                logging.info("El grupo ya estaba agregado en la base de datos.")
+                await text.edit_text(
+                    "This Group Already Added", 
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                )
+        
+        except asyncio.exceptions.TimeoutError:
+            logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
+            await text.edit_text(
+                'Process Has Been Automatically Cancelled', 
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )
+        except Exception as e:
+            logging.error(f"Ocurrió un error: {e}")
+            await text.edit_text(
+                "An error occurred. Please try again later.", 
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )
   elif type=="adduserbot":
      await query.message.delete()
      user = await CLIENT.add_session(bot, query)
