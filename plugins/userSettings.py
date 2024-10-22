@@ -79,7 +79,7 @@ async def settings_query(bot, query):
      TEXT = Translation.BOT_DETAILS if bot['is_bot'] else Translation.USER_DETAILS
      buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"userSettings#removebot")
                ],
-               [InlineKeyboardButton('↩ Back', callback_data="userSettings#bots")]]
+               [InlineKeyboardButton('↩ Back', callback_data="userSettings#main")]]
      await query.message.edit_text(
         TEXT.format(bot['name'], bot['id'], bot['username']),
         reply_markup=InlineKeyboardMarkup(buttons))
