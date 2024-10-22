@@ -161,11 +161,11 @@ async def user_settings_query(bot, query):
         except asyncio.exceptions.TimeoutError:
             logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
     except Exception as e:
-    logging.error(f"Error al enviar mensaje inicial: {str(e)}")
-    await bot.send_message(
-        user_id,
-        f"❌ An error occurred while loading groups: {str(e)}"
-    )        
+        logging.error(f"Error al enviar mensaje inicial: {str(e)}")
+        await bot.send_message(
+            user_id,
+            f"❌ An error occurred while loading groups: {str(e)}"
+        )        
 
 
 
