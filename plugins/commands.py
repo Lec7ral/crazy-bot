@@ -12,6 +12,15 @@ main_buttons = [[
         InlineKeyboardButton('❗ ʜᴇʟᴘ', callback_data='help')],[
         InlineKeyboardButton('🎓 ᴀʙᴏᴜᴛ ', callback_data='about')
         ]]
+user_main_buttons = [[
+        InlineKeyboardButton('▶️ Iniciar', callback_data=''),
+        InlineKeyboardButton('🛑 Stop', callback_data='')
+        ],[
+        InlineKeyboardButton('⚙️ Ajustes', callback_data='userSettings#main')
+        ],[
+        InlineKeyboardButton('💲 Planes', callback_data='')
+        ]]
+        
 
 
 
@@ -40,20 +49,11 @@ async def start_user(client, message):
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='userSettings#adduserbot')]])
-    reply_markup_settings = InlineKeyboardMarkup(
-            [[
-            InlineKeyboardButton('▶️ Iniciar', callback_data=''),
-            InlineKeyboardButton('🛑 Stop', callback_data='')
-            ],[
-            InlineKeyboardButton('⚙️ Ajustes', callback_data='userSettings#main')
-            ],[
-            InlineKeyboardButton('💲 Planes', callback_data='')
-            ]]
-        )
+    reply_markup_settings = InlineKeyboardMarkup(user_main_buttons)
     jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
     await asyncio.sleep(2)
     await jishubotz.delete()
-    if not await db.get_bot(user.id):
+    if not await db.is_bot_exist(user.id):
         text = Translation.START_TXT.format(user.mention)
         await message.reply_text(
             text=text,
@@ -115,10 +115,17 @@ async def how_to_use(bot, query):
 @Client.on_callback_query(filters.regex(r'^back'))
 async def back(bot, query):
     reply_markup = InlineKeyboardMarkup(main_buttons)
-    await query.message.edit_text(
-       reply_markup=reply_markup,
-       text=Translation.START_TXT.format(
-                query.from_user.first_name))
+    reply_markup_user = InlineKeyboardMarkup(user_main_buttons)    
+    if await query.from_user.id == Config.OWNER_ID:
+        await query.message.edit_text(
+               reply_markup=reply_markup,
+               text=Translation.START_TXT.format(
+               query.from_user.first_name))
+    else:
+        await query.message.edit_text(
+               reply_markup=reply_markup_user,
+               text=Translation.START_TXT_USER.format(
+               query.from_user.first_name))
 
 
 
