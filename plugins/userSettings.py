@@ -134,12 +134,12 @@ async def user_settings_query(bot, query):
                 'Process Has Been Automatically Cancelled', 
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
-        except Exception as e:
-            logging.error(f"Ocurrió un error: {e}")
-            await text.edit_text(
-                "An error occurred. Please try again later.", 
-                reply_markup=InlineKeyboardMarkup(buttons)
-            )
+    except Exception as e:
+        logging.error(f"Ocurrió un error: {e}")
+        await text.edit_text(
+            "An error occurred. Please try again later.", 
+            reply_markup=InlineKeyboardMarkup(buttons)
+        )
   elif type=="adduserbot":
      await query.message.delete()
      user = await CLIENT.add_session(bot, query)
