@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import asyncio 
@@ -114,7 +115,8 @@ async def how_to_use(bot, query):
 
 
 @Client.on_callback_query(filters.regex(r'^back') & ~filters.user(Config.OWNER_ID))
-async def back(bot, query):
+async def back_user(bot, query):
+    logging.info(f"User  callback: {query.from_user.id}")
     reply_markup_user = InlineKeyboardMarkup(user_main_buttons)    
     await query.message.edit_text(
         reply_markup=reply_markup_user,
@@ -122,7 +124,8 @@ async def back(bot, query):
         query.from_user.first_name))
 
 @Client.on_callback_query(filters.regex(r'^back') & filters.user(Config.OWNER_ID))
-async def back(bot, query):
+async def back_owner(bot, query):
+    logging.info(f"Owner callback: {query.from_user.id}")
     reply_markup = InlineKeyboardMarkup(main_buttons)   
     await query.message.edit_text(
         reply_markup=reply_markup,
