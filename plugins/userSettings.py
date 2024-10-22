@@ -56,9 +56,12 @@ async def user_settings_query(bot, query):
 
   elif type == "addchannel":
     await query.message.delete()
-    frwd_id = message.data.split("_")[2]
-    sts = STS(frwd_id)
-    _bot, caption, forward_tag, data, protect, button = await sts.get_data(user)
+    try:  
+        frwd_id = message.data.split("_")[2]
+        sts = STS(frwd_id)
+        _bot, caption, forward_tag, data, protect, button = await sts.get_data(user)
+    except Exception as e:  
+            return await m.edit(e)  
     try:
         logging.info("Iniciando el proceso para listar grupos del usuario.")
         
