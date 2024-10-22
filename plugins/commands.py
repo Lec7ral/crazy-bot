@@ -53,23 +53,30 @@ async def start_user(client, message):
     reply_markup_settings = InlineKeyboardMarkup(user_main_buttons)
     jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
     await asyncio.sleep(2)
-    await jishubotz.delete()
-    await bot.send_message(user.id, user.id)    
-    if not await db.is_bot_exist(user.id):
-        text = Translation.START_TXT.format(user.mention)
-        await message.reply_text(
-            text=text,
-            reply_markup=reply_markup,
-            quote=True
-        )
-    else:
-        text = Translation.START_TXT_USER.format(user.mention)
-        await message.reply_text(
-            text=text,
-            reply_markup=reply_markup_settings,
-            quote=True
-        )
-        
+    await jishubotz.delete()    
+    try:
+            logging.info("Verificando si el bot existe...")
+            if not await db.is_bot_exist(user.id):
+                text = Translation.START_TXT.format(user.mention)
+                await message.reply_text(
+                    text=text,
+                    reply_markup=reply_markup,
+                    quote=True
+                )
+            else:
+                text = Translation.START_TXT_USER.format(user.mention)
+                await message.reply_text(
+                    text=text,
+                    reply_markup=reply_markup_settings,
+                    quote=True
+                )
+        except Exception as e:
+            logging.error(f"Error al verificar la existencia del bot: {e}")
+            await message.reply_text("Ocurrió un error al verificar el bot. Por favor, inténtalo de nuevo más tarde.")
+
+    except Exception as e:
+        logging.error(f"Error en start_user: {e}")
+        await message.reply_text("Ocurrió un error. Por favor, inténtalo de nuevo más tarde.")
 
 
 #==================Restart Function==================#
@@ -129,7 +136,7 @@ async def back_owner(bot, query):
     reply_markup = InlineKeyboardMarkup(main_buttons)   
     await query.message.edit_text(
         reply_markup=reply_markup,
-        text=Translation.START_TXT_USER.format(
+        text=Translation.START_TXT_ADMIN.format(
         query.from_user.first_name))
 
 
