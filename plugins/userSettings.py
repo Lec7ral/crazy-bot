@@ -4,8 +4,9 @@ from database import db
 from config import Config
 from translation import Translation
 from pyrogram import Client, filters
-from .test import get_configs, update_configs, CLIENT, parse_buttons
+from .test import get_configs, update_configs, CLIENT, parse_buttons, start_clone_bot
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from .utils import STS
 
 CLIENT = CLIENT()
 
@@ -55,6 +56,9 @@ async def user_settings_query(bot, query):
 
   elif type == "addchannel":
     await query.message.delete()
+    frwd_id = message.data.split("_")[2]
+    sts = STS(frwd_id)
+    _bot, caption, forward_tag, data, protect, button = await sts.get_data(user)
     try:
         logging.info("Iniciando el proceso para listar grupos del usuario.")
         
@@ -62,8 +66,12 @@ async def user_settings_query(bot, query):
         
         # Obtener grupos del usuario
         groups = []
-        async for dialog in Client.get_dialogs():
-            chat = dialogs.chat
+        try:
+        client = await start_clone_bot(CLIENT.client(_bot))
+        except Exception as e:  
+            return await m.edit(e)
+        async for dialog in client.get_dialogs():
+            chat = dialog.chat
             if chat.type in ["group", "supergroup"]:
                 groups.append({
                     "id": chat.id,
