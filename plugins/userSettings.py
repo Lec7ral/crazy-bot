@@ -73,7 +73,15 @@ async def settings_query(bot, query):
             reply_markup=InlineKeyboardMarkup(buttons))
      except asyncio.exceptions.TimeoutError:
          await text.edit_text('Process Has Been Automatically Cancelled', reply_markup=InlineKeyboardMarkup(buttons))
-  
+         
+  elif type=="adduserbot":
+     await query.message.delete()
+     user = await CLIENT.add_session(bot, query)
+     if user != True: return
+     await query.message.reply_text(
+        "<b>Session Successfully Added To Database</b>",
+        reply_markup=InlineKeyboardMarkup(buttons))
+      
   elif type=="bots": 
      bot = await db.get_bot(user_id)
      TEXT = Translation.BOT_DETAILS if bot['is_bot'] else Translation.USER_DETAILS
