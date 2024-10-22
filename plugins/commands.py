@@ -70,13 +70,9 @@ async def start_user(client, message):
                     reply_markup=reply_markup_settings,
                     quote=True
                 )
-        except Exception as e:
-            logging.error(f"Error al verificar la existencia del bot: {e}")
-            await message.reply_text("Ocurrió un error al verificar el bot. Por favor, inténtalo de nuevo más tarde.")
-
     except Exception as e:
-        logging.error(f"Error en start_user: {e}")
-        await message.reply_text("Ocurrió un error. Por favor, inténtalo de nuevo más tarde.")
+        logging.error(f"Error al verificar la existencia del bot: {e}")
+        await message.reply_text("Ocurrió un error al verificar el bot. Por favor, inténtalo de nuevo más tarde.")
 
 
 #==================Restart Function==================#
