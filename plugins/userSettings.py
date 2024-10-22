@@ -67,7 +67,7 @@ async def user_settings_query(bot, query):
         # Obtener grupos del usuario
         groups = []
         try:
-        client = await start_clone_bot(CLIENT.client(_bot))
+            client = await start_clone_bot(CLIENT.client(_bot))
         except Exception as e:  
             return await m.edit(e)
         async for dialog in client.get_dialogs():
