@@ -234,20 +234,7 @@ def main_buttons():
                     callback_data=f'userSettings#bots'),
        InlineKeyboardButton('👥 Grupos',
                     callback_data=f'userSettings#groups')
-       ],"""[
-       InlineKeyboardButton('🖋️ Cᴀᴘᴛɪᴏɴ',
-                    callback_data=f'userSettings#caption'),
-       InlineKeyboardButton('🗃️ MᴏɴɢᴏDB',
-                    callback_data=f'userSettings#database')
        ],[
-       InlineKeyboardButton('🌟 Fɪʟᴛᴇʀs',
-                    callback_data=f'userSettings#filters'),
-       InlineKeyboardButton('🔘 Bᴜᴛᴛᴏɴ',
-                    callback_data=f'userSettings#button')
-       ],[
-       InlineKeyboardButton('🎃 Exᴛʀᴀ Sᴇᴛᴛɪɴɢs',
-                    callback_data='userSettings#nextfilters')
-       ],"""[
        InlineKeyboardButton('🔘 Bᴏᴛóɴ',
                     callback_data=f'userSettings#button')
        ],
