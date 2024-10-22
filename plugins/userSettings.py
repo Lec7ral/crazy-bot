@@ -62,14 +62,15 @@ async def user_settings_query(bot, query):
         
         # Obtener grupos del usuario
         groups = []
-        async for dialog in CLIENT.get_dialogs():
-            if dialog.chat.type in ["group", "supergroup"]:
-                groups.append({
-                    "id": dialog.chat.id,
-                    "title": dialog.chat.title,
-                    "username": dialog.chat.username or "Private",
-                    "members_count": dialog.chat.members_count
-                })
+        async for dialog in CLIENT.iter_dialogs():
+        chat = dialog.chat
+        if chat.type in ["group", "supergroup"]:
+            groups.append({
+                "id": chat.id,
+                "title": chat.title,
+                "username": chat.username or "Private",
+                "members_count": chat.members_count
+            })
         
         if not groups:
             logging.warning("No se encontraron grupos.")
