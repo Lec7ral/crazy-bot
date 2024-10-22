@@ -62,7 +62,7 @@ async def user_settings_query(bot, query):
         
         # Obtener grupos del usuario
         groups = []
-        async for dialog in CLIENT.iter_dialogs():
+        async for dialog in Client.iter_dialogs():
             chat = dialog.chat
             if chat.type in ["group", "supergroup"]:
                 groups.append({
