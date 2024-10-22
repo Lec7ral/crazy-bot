@@ -49,97 +49,117 @@ async def user_settings_query(bot, query):
        "<b><u>Mis Grupos</u></b>\n\nPuede administrar sus chats objetivo aquí",
        reply_markup=InlineKeyboardMarkup(buttons))
    
-  elif type=="addchannel":                                                    #modificar esat funcion
+
+
+
+
+
+elif type == "addchannel":
     await query.message.delete()
     try:
-        logging.info("Iniciando el proceso para agregar un grupo.")
+        logging.info("Iniciando el proceso para listar grupos del usuario.")
         
-        text = await bot.send_message(user_id, "<b><u>Set Target Group</u></b>\n\nForward A Message From Your Target Group\n/cancel - To Cancel This Process")
-        logging.info("Mensaje enviado al usuario para que reenvíe un mensaje del grupo.")
+        text = await bot.send_message(user_id, "<b>🔄 Loading your groups...</b>")
         
-        group_ids = await bot.listen(chat_id=user_id, timeout=300)
-        logging.info("Esperando el mensaje reenviado del grupo.")
-
-        if group_ids.text == "/cancel":
-            await group_ids.delete()
-            logging.info("El usuario canceló el proceso.")
+        # Obtener grupos del usuario
+        groups = []
+        async with Client("my_account", api_id=Config.API_ID, api_hash=Config.API_HASH) as app:
+            async for dialog in app.get_dialogs():
+                if dialog.chat.type in ["group", "supergroup"]:
+                    groups.append({
+                        "id": dialog.chat.id,
+                        "title": dialog.chat.title,
+                        "username": dialog.chat.username or "Private",
+                        "members_count": dialog.chat.members_count
+                    })
+        
+        if not groups:
+            logging.warning("No se encontraron grupos.")
             return await text.edit_text(
-                "Process Canceled",
+                "No groups found!",
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
         
+        # Crear botones para cada grupo
+        group_buttons = []
+        for group in groups:
+            group_buttons.append([
+                InlineKeyboardButton(
+                    f"{group['title']} ({group['members_count']} members)",
+                    callback_data=f"select_group_{group['id']}"
+                )
+            ])
+        
+        # Agregar botón de cancelar
+        group_buttons.append([InlineKeyboardButton("Cancel", callback_data="cancel_selection")])
+        
+        await text.edit_text(
+            "<b>Select a group to add:</b>\n\n"
+            "Choose from your groups below:",
+            reply_markup=InlineKeyboardMarkup(group_buttons)
+        )
+        
+        # Esperar la selección del usuario
         try:
-            # Verificar si es un mensaje reenviado
-            if not group_ids.forward_date:
-                await group_ids.delete()
-                logging.warning("El mensaje no es un mensaje reenviado.")
-                return await text.edit_text("This Is Not A Forward Message")
-            
-            # Verificar si existe forward_from_chat
-            if not group_ids.forward_from_chat:
-                await group_ids.delete()
-                logging.warning("No se puede obtener la información del chat de origen.")
-                return await text.edit_text("Cannot get source chat information")
-        
-            # Verificar si el mensaje proviene de un grupo
-            chat_type = group_ids.forward_from_chat.type
-            if chat_type not in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-                await group_ids.delete()
-                logging.warning("El mensaje reenviado no proviene de un grupo.")
-                return await text.edit_text("This Is Not A Forwarded Message From A Group")
-        
-            # Obtener información del grupo
-            group_id = group_ids.forward_from_chat.id
-            title = group_ids.forward_from_chat.title
-            username = group_ids.forward_from_chat.username
-            username = "@" + username if username else "private"
-            logging.info(f"Grupo identificado: ID={group_id}, Título={title}, Username={username}")
-        
-            # Obtener el ID del último mensaje
-            last_msg_id = group_ids.forward_from_message_id
-            if last_msg_id is None:
-                await group_ids.delete()
-                logging.warning("No se pudo obtener el ID del último mensaje.")
-                return await text.edit_text("Could not retrieve the last message ID.")
-            
-            # Construir el enlace del mensaje
-            message_link = (
-                f"https://t.me/c/{abs(group_id)}/{last_msg_id}" 
-                if group_id < 0 else 
-                f"https://t.me/{username.lstrip('@')}/{last_msg_id}"
+            callback_query = await bot.listen(
+                chat_id=user_id,
+                filters=filters.regex(r'^(select_group_|cancel_selection)'),
+                timeout=300
             )
-            logging.info(f"Enlace del último mensaje: {message_link}")
-        
-            # Guardar en la base de datos
-            group = await db.add_channel(user_id, group_id, title, username, message_link)
-            await group_ids.delete()
             
-            # Responder según el resultado
+            if callback_query.data == "cancel_selection":
+                return await text.edit_text(
+                    "Process Canceled",
+                    reply_markup=InlineKeyboardMarkup(buttons)
+                )
+            
+            # Procesar la selección del grupo
+            selected_group_id = int(callback_query.data.replace("select_group_", ""))
+            selected_group = next(
+                (g for g in groups if g["id"] == selected_group_id),
+                None
+            )
+            
+            if not selected_group:
+                raise ValueError("Selected group not found")
+            
+            # Construir el enlace del mensaje (usando el último mensaje del grupo)
+            last_msg = await app.get_messages(selected_group_id, -1)
+            message_link = (
+                f"https://t.me/c/{abs(selected_group_id)}/{last_msg.id}"
+                if selected_group_id < 0 else
+                f"https://t.me/{selected_group['username']}/{last_msg.id}"
+            )
+            
+            # Guardar en la base de datos
+            group = await db.add_channel(
+                user_id,
+                selected_group_id,
+                selected_group['title'],
+                selected_group['username'],
+                message_link
+            )
+            
             if group:
                 logging.info("Grupo agregado exitosamente a la base de datos.")
                 await text.edit_text(
-                    "Successfully Updated", 
+                    "Successfully Updated",
                     reply_markup=InlineKeyboardMarkup(buttons)
                 )
             else:
                 logging.info("El grupo ya estaba agregado en la base de datos.")
                 await text.edit_text(
-                    "This Group Already Added", 
+                    "This Group Already Added",
                     reply_markup=InlineKeyboardMarkup(buttons)
                 )
-        
+                
         except asyncio.exceptions.TimeoutError:
             logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
-            await text.edit_text(
-                'Process Has Been Automatically Cancelled', 
-                reply_markup=InlineKeyboardMarkup(buttons)
-            )
-    except Exception as e:
-        logging.error(f"Ocurrió un error: {e}")
-        await text.edit_text(
-            "An error occurred. Please try again later.", 
-            reply_markup=InlineKeyboardMarkup(buttons)
-        )
+            
+
+
+
+    
   elif type=="adduserbot":
      await query.message.delete()
      user = await CLIENT.add_session(bot, query)
@@ -292,6 +312,18 @@ async def user_settings_query(bot, query):
   elif type.startswith("alert"):
     alert = type.split('_')[1]
     await query.answer(alert, show_alert=True)
+
+async def get_user_groups(client: Client):
+    groups = []
+    async for dialog in client.get_dialogs():
+        if dialog.chat.type in ["group", "supergroup"]:
+            groups.append({
+                "id": dialog.chat.id,
+                "title": dialog.chat.title,
+                "username": dialog.chat.username,
+                "members_count": dialog.chat.members_count
+            })
+    return groups
       
 def main_buttons():
   buttons = [[
