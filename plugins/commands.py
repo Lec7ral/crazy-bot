@@ -43,7 +43,7 @@ async def start_admin(client, message):
     )
 
 #==================User Start Function===============#
-@Client.on_message(filters.private & filters.command(['start']))
+@Client.on_message(filters.private & filters.command(['start']) & ~filters.user(Config.OWNER_ID))
 async def start_user(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
@@ -112,21 +112,21 @@ async def how_to_use(bot, query):
 
 
 
-@Client.on_callback_query(filters.regex(r'^back'))
+@Client.on_callback_query(filters.regex(r'^back') & ~filters.user(Config.OWNER_ID))
 async def back(bot, query):
-    reply_markup = InlineKeyboardMarkup(main_buttons)
     reply_markup_user = InlineKeyboardMarkup(user_main_buttons)    
-    if await query.from_user.id == Config.OWNER_ID:
-        await query.message.edit_text(
-               reply_markup=reply_markup,
-               text=Translation.START_TXT.format(
-               query.from_user.first_name))
-    else:
-        await query.message.edit_text(
-               reply_markup=reply_markup_user,
-               text=Translation.START_TXT_USER.format(
-               query.from_user.first_name))
+    await query.message.edit_text(
+        reply_markup=reply_markup_user,
+        text=Translation.START_TXT_USER.format(
+        query.from_user.first_name))
 
+@Client.on_callback_query(filters.regex(r'^back') & filters.user(Config.OWNER_ID))
+async def back(bot, query):
+    reply_markup = InlineKeyboardMarkup(main_buttons)   
+    await query.message.edit_text(
+        reply_markup=reply_markup,
+        text=Translation.START_TXT.format(
+        query.from_user.first_name))
 
 
 @Client.on_callback_query(filters.regex(r'^about'))
