@@ -57,7 +57,7 @@ async def user_settings_query(bot, query):
   elif type == "addchannel":
     await query.message.delete()
     try:  
-        frwd_id = message.data.split("_")[2]
+        frwd_id = query.message.data.split("_")[2]
         sts = STS(frwd_id)
         _bot, caption, forward_tag, data, protect, button = await sts.get_data(user)
     except Exception as e:  
