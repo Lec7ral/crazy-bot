@@ -57,9 +57,9 @@ async def user_settings_query(bot, query):
   elif type == "addchannel":
     await query.message.delete()
     try:  
-        frwd_id = query.message.data.split("_")[2]
+        frwd_id = query.data.split("_")[2]
         sts = STS(frwd_id)
-        _bot, caption, forward_tag, data, protect, button = await sts.get_data(user)
+        _bot, caption, forward_tag, data, protect, button = await sts.get_data(user_id)
     except Exception as e:  
         logging.error(f"Error al enviar mensaje inicial: {str(e)}")  
     try:
