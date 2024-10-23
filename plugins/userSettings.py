@@ -83,7 +83,7 @@ async def user_settings_query(bot, query):
         logging.warning(existing_chat_ids)
         # Filtrar grupos para obtener solo aquellos que no están en channels
         try:
-            groups_no_existentes = [group for group in groups if group['chat_id'] not in existing_chat_ids]
+            grupos_filtrados = [group for group in groups if group['id'] not in existing_chat_ids]
         except Exception as e:
             logging.error(f"El problema esta aqui: {str(e)}")
         # Crear botones para cada grupo
