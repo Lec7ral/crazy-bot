@@ -105,7 +105,7 @@ async def user_settings_query(bot, query):
            reply_markup=InlineKeyboardMarkup(group_buttons)
         )
         
-        Esperar la selección del usuario
+        #Esperar la selección del usuario
         try:
            callback_query = await bot.listen(
                chat_id=user_id,
