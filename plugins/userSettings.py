@@ -82,26 +82,26 @@ async def user_settings_query(bot, query):
         grupos_filtrados = [groups for grupo in groups if grupo['chat_id'] not in existing_chat_ids]
         
         # Crear botones para cada grupo
-       group_buttons = []
-       for group in grupos_filtrados:
-           group_buttons.append([
-               InlineKeyboardButton(
-                   f"{group['title']}",
-                   callback_data=f"select_group_{group['id']}"
-               )
-           ])
+        group_buttons = []
+        for group in grupos_filtrados:
+            group_buttons.append([
+                InlineKeyboardButton(
+                    f"{group['title']}",
+                    callback_data=f"select_group_{group['id']}"
+                )
+            ])
         
         # Agregar botón de cancelar
-       group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
+        group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
         
-       await text.edit_text(
+        await text.edit_text(
            "<b>Select a group to add:</b>\n\n"
            "Choose from your groups below:",
            reply_markup=InlineKeyboardMarkup(group_buttons)
-       )
+        )
         
        # Esperar la selección del usuario
-       try:
+        try:
            callback_query = await bot.listen(
                chat_id=user_id,
                filters=filters.regex(r'^(select_group_)'),
@@ -148,8 +148,8 @@ async def user_settings_query(bot, query):
                reply_markup=InlineKeyboardMarkup(group_buttons)
            )
        
-       except Exception as e:
-       await text.edit_text(f"An error occurred: {str(e)}")
+        except Exception as e:
+        await text.edit_text(f"An error occurred: {str(e)}")
             
            #if group:
            #    logging.info("Grupo agregado exitosamente a la base de datos.")
@@ -164,7 +164,7 @@ async def user_settings_query(bot, query):
                #    reply_markup=InlineKeyboardMarkup(buttons)
                #)
                 
-       except asyncio.exceptions.TimeoutError:
+        except asyncio.exceptions.TimeoutError:
            logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
     except Exception as e:
         logging.error(f"Error al enviar mensaje inicial: {str(e)}")
