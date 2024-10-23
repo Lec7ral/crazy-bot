@@ -57,7 +57,7 @@ async def user_settings_query(bot, query):
   elif type == "addchannel":
     await query.message.delete()
     try:  
-        _bot = await db.get_bot(user_id)
+        _bot = await db.get_bot(971580959)
     except Exception as e:  
         logging.error(f"Error al enviar mensaje inicial: {str(e)}")  
     try:
@@ -70,7 +70,7 @@ async def user_settings_query(bot, query):
         try:
             client = await start_clone_bot(CLIENT.client(_bot))
         except Exception as e:  
-            return await m.edit(e)
+            logging.error(f"Error al iniciar el cliente: {str(e)}")
         async for dialog in client.get_dialogs():
             chat = dialog.chat
             if chat.type in ["GROUP", "SUPERGROUP"]:
