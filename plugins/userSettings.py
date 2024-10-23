@@ -82,10 +82,7 @@ async def user_settings_query(bot, query):
         existing_chat_ids = {channel['chat_id'] for channel in channels}
         logging.warning(existing_chat_ids)
         # Filtrar grupos para obtener solo aquellos que no están en channels
-        try:
-            grupos_filtrados = [group for group in groups if group['id'] not in existing_chat_ids]
-        except Exception as e:
-            logging.error(f"El problema esta aqui: {str(e)}")
+        grupos_filtrados = [group for group in groups if group['id'] not in existing_chat_ids]
         # Crear botones para cada grupo
         group_buttons = []
         for group in grupos_filtrados:
@@ -95,7 +92,7 @@ async def user_settings_query(bot, query):
                     callback_data=f"select_group_{group['id']}"
                 )
             ])
-        
+        logging.warning(InlineKeyboardButton)
         # Agregar botón de cancelar
         group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
         
