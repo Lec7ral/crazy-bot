@@ -57,7 +57,7 @@ async def user_settings_query(bot, query):
   elif type == "addchannel":
     await query.message.delete()
     try:  
-        _bot = await db.get_bot(971580959)
+        _bot = await db.get_bot(6623126981)
     except Exception as e:  
         logging.error(f"Error al enviar mensaje inicial: {str(e)}")  
     try:
