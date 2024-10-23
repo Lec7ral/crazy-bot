@@ -59,6 +59,8 @@ async def get_bot_groups(FwdBot):
         if not FwdBot.is_connected:
             await FwdBot.start()
             logging.warning("EL bot arranco bien")
+            dial = FwdBot.get_dialogs()
+            logging.warning(dial)
         async for dialog in FwdBot.get_dialogs():
             chat = dialog.chat
             logging.warning(chat)
