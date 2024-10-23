@@ -78,8 +78,11 @@ async def user_settings_query(bot, query):
                 "No groups found!",
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
+        
         existing_chat_ids = {channel['chat_id'] for channel in channels}
-        grupos_filtrados = [groups for grupo in groups if grupo['chat_id'] not in existing_chat_ids]
+        logging.warning(existing_chat_ids)
+        # Filtrar grupos para obtener solo aquellos que no están en channels
+        groups_no_existentes = [group for group in groups if group['chat_id'] not in existing_chat_ids]
         
         # Crear botones para cada grupo
         group_buttons = []
