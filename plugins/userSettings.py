@@ -149,7 +149,7 @@ async def user_settings_query(bot, query):
            )
        
         except Exception as e:
-        await text.edit_text(f"An error occurred: {str(e)}")
+         await text.edit_text(f"An error occurred: {str(e)}")
             
            #if group:
            #    logging.info("Grupo agregado exitosamente a la base de datos.")
