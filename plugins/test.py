@@ -61,7 +61,7 @@ async def get_bot_groups(FwdBot):
             logging.warning("EL bot arranco bien")
         async for dialog in FwdBot.get_dialogs():
             chat = dialog.chat
-            if chat.type in ["group", "supergroup"]:
+            if chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
                 groups.append({
                     "id": chat.id,
                     "title": chat.title,
