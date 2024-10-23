@@ -14,6 +14,7 @@ from pyrogram.errors.exceptions.bad_request_400 import AccessTokenExpired, Acces
 from pyrogram.errors import FloodWait
 from config import Config
 from translation import Translation
+from enums import ChatType
 
 from typing import Union, Optional, AsyncGenerator
 
@@ -65,7 +66,7 @@ async def get_bot_groups(FwdBot):
             logging.warning(chat)
             logging.warning(chat.type)
             logging.warning(type(chat.type))
-            if chat.type == "ChatType.SUPERGROUP":
+            if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
                 groups.append({
                     "id": chat.id,
                     "title": chat.title,
