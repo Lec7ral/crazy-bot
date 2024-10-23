@@ -58,7 +58,7 @@ async def get_bot_groups(FwdBot):
         # Iniciar el bot si no está iniciado
         if not FwdBot.is_connected:
             await FwdBot.start()
-
+            logging.warning("EL bot arranco bien")
         async for dialog in FwdBot.get_dialogs():
             chat = dialog.chat
             if chat.type in ["group", "supergroup"]:
@@ -68,6 +68,7 @@ async def get_bot_groups(FwdBot):
                     "username": chat.username or "Private",
                     "members_count": chat.members_count
                 })
+                logging.warning("Se adicionaron algunos")
 
     except Exception as e:
         logging.error(f"Error al obtener grupos: {str(e)}")
