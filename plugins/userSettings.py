@@ -56,6 +56,7 @@ async def user_settings_query(bot, query):
 
   elif type == "addchannel":
     await query.message.delete()
+    channels = await db.get_user_channels(user_id)
     try:  
         _bot = await db.get_bot(user_id)
     except Exception as e:  
@@ -70,100 +71,101 @@ async def user_settings_query(bot, query):
         try:
             groups = await get_bot_groups(CLIENT.client(_bot))
         except Exception as e:  
-            logging.error(f"Error al iniciar el cliente: {str(e)}")
-        #async for dialog in client.get_dialogs():
-        #    chat = dialog.chat
-        #    if chat.type in ["group", "supergroup"]:
-        #        groups.append({
-        #            "id": chat.id,
-        #            "title": chat.title,
-        #            "username": chat.username or "Private",
-        #            "members_count": chat.members_count
-        #        })
-        
+            logging.error(f"Error al iniciar el cliente: {str(e)}")       
         if not groups:
             logging.warning("No se encontraron grupos.")
             return await text.edit_text(
                 "No groups found!",
                 reply_markup=InlineKeyboardMarkup(buttons)
             )
-        
+        existing_chat_ids = {channel['chat_id'] for channel in channels}
+        grupos_filtrados = [groups for grupo in groups if grupo['chat_id'] not in existing_chat_ids]
         
         # Crear botones para cada grupo
-        group_buttons = []
-        for group in groups:
-            group_buttons.append([
-                InlineKeyboardButton(
-                    f"{group['title']}",
-                    callback_data=f"select_group_{group['id']}"
-                )
-            ])
+       group_buttons = []
+       for group in grupos_filtrados:
+           group_buttons.append([
+               InlineKeyboardButton(
+                   f"{group['title']}",
+                   callback_data=f"select_group_{group['id']}"
+               )
+           ])
         
         # Agregar botón de cancelar
-        group_buttons.append([InlineKeyboardButton("Cancel", callback_data="cancel_selection")])
+       group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
         
-        await text.edit_text(
-            "<b>Select a group to add:</b>\n\n"
-            "Choose from your groups below:",
-            reply_markup=InlineKeyboardMarkup(group_buttons)
-        )
+       await text.edit_text(
+           "<b>Select a group to add:</b>\n\n"
+           "Choose from your groups below:",
+           reply_markup=InlineKeyboardMarkup(group_buttons)
+       )
         
-        # Esperar la selección del usuario
-        try:
-            callback_query = await bot.listen(
-                chat_id=user_id,
-                filters=filters.regex(r'^(select_group_|cancel_selection)'),
-                timeout=300
-            )
+       # Esperar la selección del usuario
+       try:
+           callback_query = await bot.listen(
+               chat_id=user_id,
+               filters=filters.regex(r'^(select_group_)'),
+               timeout=300
+           )
+       
+           # Procesar la selección del grupo
+           selected_group_id = int(callback_query.data.replace("select_group_", ""))
+           selected_group = next(
+               (g for g in groups if g["id"] == selected_group_id),
+               None
+           )
+       
+           if not selected_group:
+               raise ValueError("Selected group not found")
+       
+           # Guardar en la base de datos
+           group = await db.add_channel(
+               user_id,
+               selected_group_id,
+               selected_group['title'],
+               selected_group['username']
+           )
+       
+           # Eliminar el grupo de la lista de grupos
+           grupos_filtrados = [g for g in grupos_filtrados if g["id"] != selected_group_id]
+       
+           # Actualizar la vista para eliminar el grupo seleccionado
+           group_buttons = []
+           for group in grupos_filtrados:
+               group_buttons.append([
+                   InlineKeyboardButton(
+                       f"{group['title']}",
+                       callback_data=f"select_group_{group['id']}"
+                   )
+               ])
             
-            if callback_query.data == "cancel_selection":
-                return await text.edit_text(
-                    "Process Canceled",
-                    reply_markup=InlineKeyboardMarkup(buttons)
-                )
+           # Agregar botón de cancelar
+           group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
+       
+           await text.edit_text(
+               "<b>Select a group to add:</b>\n\n"
+               "Choose from your groups below:",
+               reply_markup=InlineKeyboardMarkup(group_buttons)
+           )
+       
+       except Exception as e:
+       await text.edit_text(f"An error occurred: {str(e)}")
             
-            # Procesar la selección del grupo
-            selected_group_id = int(callback_query.data.replace("select_group_", ""))
-            selected_group = next(
-                (g for g in groups if g["id"] == selected_group_id),
-                None
-            )
-            
-            if not selected_group:
-                raise ValueError("Selected group not found")
-            
-            # Construir el enlace del mensaje (usando el último mensaje del grupo)
-            last_msg = await app.get_messages(selected_group_id, -1)
-            message_link = (
-                f"https://t.me/c/{abs(selected_group_id)}/{last_msg.id}"
-                if selected_group_id < 0 else
-                f"https://t.me/{selected_group['username']}/{last_msg.id}"
-            )
-            
-            # Guardar en la base de datos
-            group = await db.add_channel(
-                user_id,
-                selected_group_id,
-                selected_group['title'],
-                selected_group['username'],
-                message_link
-            )
-            
-            if group:
-                logging.info("Grupo agregado exitosamente a la base de datos.")
-                await text.edit_text(
-                    "Successfully Updated",
-                    reply_markup=InlineKeyboardMarkup(buttons)
-                )
-            else:
-                logging.info("El grupo ya estaba agregado en la base de datos.")
-                await text.edit_text(
-                    "This Group Already Added",
-                    reply_markup=InlineKeyboardMarkup(buttons)
-                )
+           #if group:
+           #    logging.info("Grupo agregado exitosamente a la base de datos.")
+           #    await text.edit_text(
+           #        "Successfully Updated",
+           #        reply_markup=InlineKeyboardMarkup(buttons)
+            #   )
+           #else:
+            #   logging.info("El grupo ya estaba agregado en la base de datos.")
+             #  await text.edit_text(
+              #     "This Group Already Added",
+               #    reply_markup=InlineKeyboardMarkup(buttons)
+               #)
                 
-        except asyncio.exceptions.TimeoutError:
-            logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
+       except asyncio.exceptions.TimeoutError:
+           logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
     except Exception as e:
         logging.error(f"Error al enviar mensaje inicial: {str(e)}")
         await bot.send_message(
