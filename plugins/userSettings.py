@@ -94,7 +94,7 @@ async def user_settings_query(bot, query):
         for group in groups:
             group_buttons.append([
                 InlineKeyboardButton(
-                    f"{group['title']} ({group['members_count']} members)",
+                    f"{group['title']}",
                     callback_data=f"select_group_{group['id']}"
                 )
             ])
