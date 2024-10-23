@@ -4,7 +4,7 @@ from database import db
 from config import Config
 from translation import Translation
 from pyrogram import Client, filters
-from .test import get_configs, update_configs, CLIENT, parse_buttons, start_clone_bot
+from .test import get_configs, update_configs, CLIENT, parse_buttons, get_bot_groups
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from .utils import STS
 
@@ -68,7 +68,7 @@ async def user_settings_query(bot, query):
         # Obtener grupos del usuario
         groups = []
         try:
-            client = await start_clone_bot(CLIENT.client(_bot))
+            client = await get_bot_groups(CLIENT.client(_bot))
         except Exception as e:  
             logging.error(f"Error al iniciar el cliente: {str(e)}")
         async for dialog in client.get_dialogs():
