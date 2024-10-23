@@ -43,7 +43,36 @@ BTN_URL_REGEX = re.compile(r"(\[([^\[]+?)]\[buttonurl:/{0,2}(.+?)(:same)?])")
 BOT_TOKEN_TEXT = "1) Create A Bot Using @BotFather\n\n2) Then You Will Get A Message With Bot Token\n\n3) Forward That Message To Me"
 SESSION_STRING_SIZE = 351
 
+async def get_bot_groups(FwdBot):
+    """
+    Obtiene todos los grupos a los que pertenece el bot.
 
+    Args:
+        FwdBot: La instancia del bot.
+
+    Returns:
+        List[Dict]: Una lista de diccionarios con información sobre los grupos.
+    """
+    groups = []
+    try:
+        # Iniciar el bot si no está iniciado
+        if not FwdBot.is_connected:
+            await FwdBot.start()
+
+        async for dialog in FwdBot.get_dialogs():
+            chat = dialog.chat
+            if chat.type in ["group", "supergroup"]:
+                groups.append({
+                    "id": chat.id,
+                    "title": chat.title,
+                    "username": chat.username or "Private",
+                    "members_count": chat.members_count
+                })
+
+    except Exception as e:
+        logging.error(f"Error al obtener grupos: {str(e)}")
+
+    return groups
 
 async def start_clone_bot(FwdBot, data=None):
    await FwdBot.start()
