@@ -64,12 +64,11 @@ async def get_bot_groups(FwdBot):
         async for dialog in FwdBot.get_dialogs():
             chat = dialog.chat
             logging.warning(chat)
-            if chat.type in ["ChatType.GROUP", "ChatType.SUPERGROUP"]:
+            if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
                 groups.append({
                     "id": chat.id,
                     "title": chat.title,
-                    "username": chat.username or "Private",
-                    "members_count": chat.members_count
+                    "username": chat.username or "Private"
                 })
                 logging.warning("Se adicionaron algunos")
 
