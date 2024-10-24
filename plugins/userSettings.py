@@ -92,7 +92,7 @@ async def user_settings_query(bot, query):
             ])
         # Agregar botón de cancelar
         group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
-        
+        logging.info("hasta aqui bien")
         await text.edit_text(
            "<b>Select a group to add:</b>\n\n"
            "Choose from your groups below:",
