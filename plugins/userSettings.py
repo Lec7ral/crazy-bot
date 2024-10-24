@@ -227,13 +227,13 @@ async def user_settings_query(bot, query):
        
       #Actualizar la vista para eliminar el grupo seleccionado
       group_buttons = []
-           for group in grupos_filtrados:
-               group_buttons.append([
-                  InlineKeyboardButton(
-                      f"{group['title']}",
-                      callback_data=f"userSettings#select_group_{group['chat_id']}"
-                  )
-              ])
+      for group in grupos_filtrados:
+           group_buttons.append([
+              InlineKeyboardButton(
+                  f"{group['title']}",
+                  callback_data=f"userSettings#select_group_{group['chat_id']}"
+              )
+           ])
             
            #Agregar botón de cancelar
       group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
