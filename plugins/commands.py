@@ -45,7 +45,37 @@ async def start_admin(client, message):
     )
 
 #==================User Start Function===============#
-@Client.on_message(filters.private & (filters.command(['start']) | filters.regex(r'^start')) & ~filters.user(Config.OWNER_ID))
+@Client.on_message(filters.private & filters.command(['start']) & ~filters.user(Config.OWNER_ID))
+async def start_user(client, message):
+    user = message.from_user
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, user.first_name)
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('🔑 Iniciar sesion', callback_data='userSettings#adduserbot')]])
+    reply_markup_settings = InlineKeyboardMarkup(user_main_buttons)
+    jishubotz = await message.reply_sticker("CAACAgEAAxkBAAEMLQ9mSt_K7_M9zPshnOI6pLz6Ysti3wACXQQAAsjRGETv0HseLYp8LR4E")
+    await asyncio.sleep(2)
+    await jishubotz.delete()    
+    try:
+            logging.info("Verificando si el bot existe...")
+            if not await db.is_bot_exist(user.id):
+                text = Translation.START_TXT.format(user.mention)
+                await message.reply_text(
+                    text=text,
+                    reply_markup=reply_markup,
+                    quote=True
+                )
+            else:
+                text = Translation.START_TXT_USER.format(user.mention)
+                await message.reply_text(
+                    text=text,
+                    reply_markup=reply_markup_settings,
+                    quote=True
+                )
+    except Exception as e:
+        logging.error(f"Error al verificar la existencia del bot: {e}")
+        await message.reply_text("Ocurrió un error al verificar el bot. Por favor, inténtalo de nuevo más tarde.")
+
+@Client.on_callback_query(filters.regex(r'^start'))
 async def start_user(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
