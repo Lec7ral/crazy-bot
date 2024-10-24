@@ -217,19 +217,13 @@ async def user_settings_query(bot, query):
      chat_id = int(type.split('_')[1])
      logging.warning(f"Brinco bien hasta aqui id{chat_id}")
      groups = await get_bot_groups(CLIENT.client(_bot))
-     try:
-      groups_in_db = await db.get_user_channels(user_id)
-     except Exception as e:
-         logging.error(f"Al buscar en la db {e}")
+     groups_in_db = await db.get_user_channels(user_id)
      logging.warning(f"Bien hasta aqui {groups}")
-     try:
-         selected_group = next(
+     selected_group = next(
                    (g for g in groups if g["id"] == chat_id),
                    None
          )
-         logging.warning(selected_group)
-     except Exception as e:
-         logging.error(f"Tuvo fallo en: {e}")
+     logging.warning(selected_group)
      if selected_group is None:
         logging.error(f"Grupo seleccionado no encontrado: {chat_id}")
         await query.message.edit_text("Grupo no encontrado.")
@@ -245,10 +239,12 @@ async def user_settings_query(bot, query):
          logging.error(f"Tuvo fallo en: {e}")
      logging.warning("Adiciono")
       #Eliminar el grupo de la lista de grupos
-     existing_chat_ids = {groups_in_db['chat_id'] for channel in groups_in_db}
-     grupos_filtrados = [g for g in groups if g["id"] != chat_id]
-     grupos_filtrados = [group for group in grupos_filtrados if group['id'] not in existing_chat_ids]
-       
+     try: 
+         existing_chat_ids = {groups_in_db['chat_id'] for channel in groups_in_db}
+         grupos_filtrados = [g for g in groups if g["id"] != chat_id]
+         grupos_filtrados = [group for group in grupos_filtrados if group['id'] not in existing_chat_ids]
+     except Exception as e:
+         logging.error(f"flitrado por {e}")
       #Actualizar la vista para eliminar el grupo seleccionado
      group_buttons = []
      for group in grupos_filtrados:
@@ -261,13 +257,14 @@ async def user_settings_query(bot, query):
             
            #Agregar botón de cancelar
      group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
-       
-     await text.edit_text(
-               "<b>Select a group to add:</b>\n\n"
-               "Choose from your groups below:",
-               reply_markup=InlineKeyboardMarkup(group_buttons)
-           )
-            
+     try:  
+         await text.edit_text(
+                   "<b>Select a group to add:</b>\n\n"
+                   "Choose from your groups below:",
+                   reply_markup=InlineKeyboardMarkup(group_buttons)
+               )
+     except Exception as e:
+         logging.error(f"Fue al reescribir {e}")
 
 
     
