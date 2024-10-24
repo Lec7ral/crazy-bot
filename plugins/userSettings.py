@@ -217,7 +217,10 @@ async def user_settings_query(bot, query):
      chat_id = int(type.split('_')[1])
      logging.warning(f"Brinco bien hasta aqui id{chat_id}")
      groups = await get_bot_groups(CLIENT.client(_bot))
-     groups_in_db = await get_user_channels(user_id)
+     try:
+      groups_in_db = await get_user_channels(user_id)
+     except Exception as e:
+         logging.error(f"Al buscar en la db {e}")
      logging.warning(f"Bien hasta aqui {groups}")
      try:
          selected_group = next(
