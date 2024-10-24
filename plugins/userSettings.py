@@ -8,7 +8,6 @@ from .test import get_configs, update_configs, CLIENT, parse_buttons, get_bot_gr
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from .utils import STS
 from pyrogram.raw import types
-from .commands import start_user
 
 CLIENT = CLIENT()
 
