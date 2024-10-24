@@ -76,7 +76,7 @@ async def start_user(client, message):
         await message.reply_text("Ocurrió un error al verificar el bot. Por favor, inténtalo de nuevo más tarde.")
 
 @Client.on_callback_query(filters.regex(r'^start'))
-async def start_user(client, message):
+async def start_user_again(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
