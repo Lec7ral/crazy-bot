@@ -223,8 +223,13 @@ async def user_settings_query(bot, query):
                    (g for g in groups if g["id"] == chat_id),
                    None
          )
+         logging.warning(selected_group)
      except Exception as e:
          logging.error(f"Tuvo fallo en: {e}")
+    if selected_group is None:
+        logging.error(f"Grupo seleccionado no encontrado: {chat_id}")
+        await query.message.edit_text("Grupo no encontrado.")
+        return  # Salir si no se encuentra el grupo
      try:    
          await db.add_channel(
                    user_id,
