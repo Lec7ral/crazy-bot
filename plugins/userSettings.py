@@ -213,26 +213,26 @@ async def user_settings_query(bot, query):
 
     
   elif type.startswith("selectgroup"):
-      loggin.warning("Brinco bien hasta aqui id")
-      chat_id = type.split('_')[1]
-      loggin.warning(f"Brinco bien hasta aqui id{chat_id}")
-      groups = await get_bot_groups(CLIENT.client(_bot))
-      selected_group = next(
+     loggin.warning("Brinco bien hasta aqui id")
+     chat_id = type.split('_')[1]
+     loggin.warning(f"Brinco bien hasta aqui id{chat_id}")
+     groups = await get_bot_groups(CLIENT.client(_bot))
+     selected_group = next(
                (g for g in groups if g["id"] == chat_id),
                None
-      )
-      await db.add_channel(
+     )
+     await db.add_channel(
                user_id,
                chat_id,
                selected_group['title'],
                selected_group['username']
-           )
+          )
       #Eliminar el grupo de la lista de grupos
-      grupos_filtrados = [g for g in groups if g["id"] != chat_id]
+     grupos_filtrados = [g for g in groups if g["id"] != chat_id]
        
       #Actualizar la vista para eliminar el grupo seleccionado
-      group_buttons = []
-      for group in grupos_filtrados:
+     group_buttons = []
+     for group in grupos_filtrados:
            group_buttons.append([
               InlineKeyboardButton(
                   f"{group['title']}",
@@ -241,9 +241,9 @@ async def user_settings_query(bot, query):
            ])
             
            #Agregar botón de cancelar
-      group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
+     group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
        
-      await text.edit_text(
+     await text.edit_text(
                "<b>Select a group to add:</b>\n\n"
                "Choose from your groups below:",
                reply_markup=InlineKeyboardMarkup(group_buttons)
