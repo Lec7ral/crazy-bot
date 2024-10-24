@@ -220,6 +220,7 @@ async def user_settings_query(bot, query):
   
   elif type.startswith("removechannel"):
      chat_id = type.split('_')[1]
+     buttons = [[InlineKeyboardButton('↩ Back', callback_data="userSettings#groups")]]
      await db.remove_channel(user_id, chat_id)
      await query.message.edit_text(
         "Eliminado correctamente",
