@@ -130,6 +130,7 @@ async def user_settings_query(bot, query):
                                              
   elif type=="removebot":
      await db.remove_bot(user_id)
+     buttons = [[InlineKeyboardButton('↩ Back', callback_data="start")]]
      await query.message.edit_text(
         "Eliminado correctamente",
         reply_markup=InlineKeyboardMarkup(buttons))
