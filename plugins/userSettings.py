@@ -85,7 +85,7 @@ async def user_settings_query(bot, query):
             group_buttons.append([
                 InlineKeyboardButton(
                     f"{group['title']}",
-                    callback_data=f"userSettings#select_group_{group['chat_id']}"
+                    callback_data=f"userSettings#select_group_{group['id']}"
                 )
             ])
         # Agregar botón de cancelar
@@ -213,7 +213,7 @@ async def user_settings_query(bot, query):
       chat_id = type.split('_')[2]
       groups = await get_bot_groups(CLIENT.client(_bot))
       selected_group = next(
-               (g for g in groups if g["chat_id"] == chat_id),
+               (g for g in groups if g["id"] == chat_id),
                None
       )
       await db.add_channel(
@@ -223,7 +223,7 @@ async def user_settings_query(bot, query):
                selected_group['username']
            )
       #Eliminar el grupo de la lista de grupos
-      grupos_filtrados = [g for g in groups if g["chat_id"] != chat_id]
+      grupos_filtrados = [g for g in groups if g["id"] != chat_id]
        
       #Actualizar la vista para eliminar el grupo seleccionado
       group_buttons = []
@@ -231,7 +231,7 @@ async def user_settings_query(bot, query):
            group_buttons.append([
               InlineKeyboardButton(
                   f"{group['title']}",
-                  callback_data=f"userSettings#select_group_{group['chat_id']}"
+                  callback_data=f"userSettings#select_group_{group['id']}"
               )
            ])
             
