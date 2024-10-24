@@ -240,7 +240,7 @@ async def user_settings_query(bot, query):
          logging.error(f"Tuvo fallo en: {e}")
      logging.warning("Adiciono")
      try: 
-        await client.answer_callback_query(
+        await query.answer_callback_query(
             callback_query.id,
             text="Texto copiado",
             show_alert=True  # Cambia a True si quieres que aparezca como alerta
