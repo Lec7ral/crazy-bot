@@ -100,71 +100,6 @@ async def user_settings_query(bot, query):
            "Choose from your groups below:",
            reply_markup=InlineKeyboardMarkup(group_buttons)
         )
-        
-        #Esperar la selección del usuario
-        #try:
-         #  callback_query = await bot.listen(
-          #     chat_id=user_id,
-           #    filters=filters.regex(r'^(selectgroup_)'),
-            #   timeout=300
-           #)
-           #logging.warning("entro y se ejecuto esta parte")
-           # Procesar la selección del grupo
-           #selected_group_id = int(callback_query.data.replace("selectgroup_", ""))
-           #logging
-        # selected_group = next(
-          #     (g for g in groups if g["id"] == selected_group_id),
-          #     None
-          # )
-       
-          # if not selected_group:
-           #    raise ValueError("Selected group not found")
-       
-           # Guardar en la base de datos
-         #  group = await db.add_channel(
-          #     user_id,
-          #     selected_group_id,
-          #     selected_group['title'],
-          #     selected_group['username']
-          # )
-       
-           # Eliminar el grupo de la lista de grupos
-          # grupos_filtrados = [g for g in grupos_filtrados if g["id"] != selected_group_id]
-       
-           # Actualizar la vista para eliminar el grupo seleccionado
-          # group_buttons = []
-         #  for group in grupos_filtrados:
-         #      group_buttons.append([
-          #         InlineKeyboardButton(
-          #             f"{group['title']}",
-          #             callback_data=f"userSettings#selectgroup_{group['id']}"
-          #         )
-          #     ])
-            
-           # Agregar botón de cancelar
-          # group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
-       
-          # await text.edit_text(
-           #    "<b>Select a group to add:</b>\n\n"
-           #    "Choose from your groups below:",
-           #    reply_markup=InlineKeyboardMarkup(group_buttons)
-          # )
-            
-           #if group:
-           #    logging.info("Grupo agregado exitosamente a la base de datos.")
-           #    await text.edit_text(
-           #        "Successfully Updated",
-           #        reply_markup=InlineKeyboardMarkup(buttons)
-            #   )
-           #else:
-            #   logging.info("El grupo ya estaba agregado en la base de datos.")
-             #  await text.edit_text(
-              #     "This Group Already Added",
-               #    reply_markup=InlineKeyboardMarkup(buttons)
-               #)
-                
-        #except asyncio.exceptions.TimeoutError:
-           #logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
     except Exception as e:
         logging.error(f"Error al enviar mensaje inicial: {str(e)}")
         await bot.send_message(
@@ -240,11 +175,8 @@ async def user_settings_query(bot, query):
          logging.error(f"Tuvo fallo en: {e}")
      logging.warning("Adiciono")
      try: 
-        await query.answer_callback_query(
-            callback_query.id,
-            text="Texto copiado",
-            show_alert=True  # Cambia a True si quieres que aparezca como alerta
-        )
+        text = "Adicionado correctamente" 
+        await bot.answer_callback_query(query_id, text=text, show_alert=True)
      except Exception as e:
          logging.error(f"Tuvo fallo en: {e}")    
       #Eliminar el grupo de la lista de grupos
