@@ -240,12 +240,17 @@ async def user_settings_query(bot, query):
      logging.warning("Adiciono")
       #Eliminar el grupo de la lista de grupos
      try: 
-         existing_chat_ids = {groups_in_db['chat_id'] for channel in groups_in_db}
+         existing_chat_ids = {channel['chat_id'] for channel in groups_in_db}
      except Exception as e:
          logging.error(f"flitrado por {e}")
-     grupos_filtrados = [g for g in groups if g["id"] != chat_id]
-     grupos_filtrados = [group for group in grupos_filtrados if group['id'] not in existing_chat_ids]
-     
+     try:
+         grupos_filtrados = [g for g in groups if g["id"] != chat_id]
+     except Exception as e:
+         logging.error(f"flitrado por {e}")
+     try:
+         grupos_filtrados = [group for group in grupos_filtrados if group['id'] not in existing_chat_ids]
+     except Exception as e:
+         logging.error(f"flitrado por {e}")
       #Actualizar la vista para eliminar el grupo seleccionado
      group_buttons = []
      for group in grupos_filtrados:
