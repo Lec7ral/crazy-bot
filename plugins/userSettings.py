@@ -217,6 +217,7 @@ async def user_settings_query(bot, query):
      chat_id = type.split('_')[1]
      logging.warning(f"Brinco bien hasta aqui id{chat_id}")
      groups = await get_bot_groups(CLIENT.client(_bot))
+     logging.warning("Bien hasta aqui")
      selected_group = next(
                (g for g in groups if g["id"] == chat_id),
                None
@@ -227,6 +228,7 @@ async def user_settings_query(bot, query):
                selected_group['title'],
                selected_group['username']
           )
+     logging.warning("Adiciono")
       #Eliminar el grupo de la lista de grupos
      grupos_filtrados = [g for g in groups if g["id"] != chat_id]
        
