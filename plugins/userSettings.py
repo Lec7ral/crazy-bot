@@ -213,6 +213,7 @@ async def user_settings_query(bot, query):
 
     
   elif type.startswith("select_group"):
+      loggin.warning("Brinco bien hasta aqui id")
       chat_id = type.split('_')[2]
       loggin.warning(f"Brinco bien hasta aqui id{chat_id}")
       groups = await get_bot_groups(CLIENT.client(_bot))
