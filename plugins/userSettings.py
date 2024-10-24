@@ -217,7 +217,7 @@ async def user_settings_query(bot, query):
      chat_id = type.split('_')[1]
      logging.warning(f"Brinco bien hasta aqui id{chat_id}")
      groups = await get_bot_groups(CLIENT.client(_bot))
-     logging.warning("Bien hasta aqui")
+     logging.warning(f"Bien hasta aqui {groups}")
      try:
          selected_group = next(
                    (g for g in groups if g["id"] == chat_id),
