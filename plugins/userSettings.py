@@ -7,6 +7,7 @@ from pyrogram import Client, filters
 from .test import get_configs, update_configs, CLIENT, parse_buttons, get_bot_groups
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from .utils import STS
+from pyrogram.raw import types
 
 CLIENT = CLIENT()
 
@@ -238,6 +239,14 @@ async def user_settings_query(bot, query):
      except Exception as e:
          logging.error(f"Tuvo fallo en: {e}")
      logging.warning("Adiciono")
+     try: 
+        await client.answer_callback_query(
+            callback_query.id,
+            text="Texto copiado",
+            show_alert=True  # Cambia a True si quieres que aparezca como alerta
+        )
+     except Exception as e:
+         logging.error(f"Tuvo fallo en: {e}")    
       #Eliminar el grupo de la lista de grupos
      try: 
          existing_chat_ids = {channel['chat_id'] for channel in groups_in_db}
