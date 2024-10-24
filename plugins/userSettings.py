@@ -30,6 +30,7 @@ async def user_settings_query(bot, query):
   user_id = query.from_user.id
   i, type = query.data.split("#")
   buttons = [[InlineKeyboardButton('↩ Back', callback_data="userSettings#main")]]
+  _bot = await db.get_bot(user_id)
   
   if type=="main":
      await query.message.edit_text(
@@ -38,7 +39,7 @@ async def user_settings_query(bot, query):
            
   if type=="groups":
      buttons = []
-     channels = await db.get_user_channels(user_id)                           #modificar user_chanels
+     channels = await db.get_user_channels(user_id)
      for channel in channels:
         buttons.append([InlineKeyboardButton(f"{channel['title']}",
                          callback_data=f"userSettings#editchannels_{channel['chat_id']}")])
@@ -57,10 +58,6 @@ async def user_settings_query(bot, query):
   elif type == "addchannel":
     await query.message.delete()
     channels = await db.get_user_channels(user_id)
-    try:  
-        _bot = await db.get_bot(user_id)
-    except Exception as e:  
-        logging.error(f"Error al enviar mensaje inicial: {str(e)}")  
     try:
         logging.info("Iniciando el proceso para listar grupos del usuario.")
         
@@ -80,12 +77,7 @@ async def user_settings_query(bot, query):
             )
         
         existing_chat_ids = {channel['chat_id'] for channel in channels}
-        logging.warning(existing_chat_ids)
         # Filtrar grupos para obtener solo aquellos que no están en channels
-        
-        
-        
-        
         grupos_filtrados = [group for group in groups if group['id'] not in existing_chat_ids]
         # Crear botones para cada grupo
         group_buttons = []
@@ -93,7 +85,7 @@ async def user_settings_query(bot, query):
             group_buttons.append([
                 InlineKeyboardButton(
                     f"{group['title']}",
-                    callback_data=f"select_group_{group['id']}"
+                    callback_data=f"userSettings#select_group_{group['chat_id']}"
                 )
             ])
         # Agregar botón de cancelar
@@ -114,8 +106,9 @@ async def user_settings_query(bot, query):
            )
            logging.warning("entro y se ejecuto esta parte")
            # Procesar la selección del grupo
-          # selected_group_id = int(callback_query.data.replace("select_group_", ""))
-          # selected_group = next(
+           #selected_group_id = int(callback_query.data.replace("select_group_", ""))
+           #logging
+        # selected_group = next(
           #     (g for g in groups if g["id"] == selected_group_id),
           #     None
           # )
@@ -152,9 +145,6 @@ async def user_settings_query(bot, query):
            #    "Choose from your groups below:",
            #    reply_markup=InlineKeyboardMarkup(group_buttons)
           # )
-       
-        except Exception as e:
-         await text.edit_text(f"An error occurred: {str(e)}")
             
            #if group:
            #    logging.info("Grupo agregado exitosamente a la base de datos.")
@@ -215,7 +205,51 @@ async def user_settings_query(bot, query):
      await query.message.edit_text(
         f"<b><u>📄 Channel Details</b></u>\n\n<b>Title :</b> <code>{chat['title']}</code>\n<b>Channel ID :</b> <code>{chat['chat_id']}</code>\n<b>Username :</b> {chat['username']}",
         reply_markup=InlineKeyboardMarkup(buttons))
-                                             
+
+
+
+    
+  elif type.startswith("select_group"):
+      chat_id = type.split('_')[2]
+      groups = await get_bot_groups(CLIENT.client(_bot))
+      selected_group = next(
+               (g for g in groups if g["chat_id"] == chat_id),
+               None
+      )
+      await db.add_channel(
+               user_id,
+               chat_id,
+               selected_group['title'],
+               selected_group['username']
+           )
+      #Eliminar el grupo de la lista de grupos
+      grupos_filtrados = [g for g in groups if g["chat_id"] != chat_id]
+       
+      #Actualizar la vista para eliminar el grupo seleccionado
+      group_buttons = []
+           for group in grupos_filtrados:
+               group_buttons.append([
+                  InlineKeyboardButton(
+                      f"{group['title']}",
+                      callback_data=f"userSettings#select_group_{group['chat_id']}"
+                  )
+              ])
+            
+           #Agregar botón de cancelar
+      group_buttons.append([InlineKeyboardButton('↩ Back', callback_data="userSettings#main")])
+       
+      await text.edit_text(
+               "<b>Select a group to add:</b>\n\n"
+               "Choose from your groups below:",
+               reply_markup=InlineKeyboardMarkup(group_buttons)
+           )
+            
+
+
+    
+  
+  
+  
   elif type.startswith("removechannel"):
      chat_id = type.split('_')[1]
      await db.remove_channel(user_id, chat_id)
