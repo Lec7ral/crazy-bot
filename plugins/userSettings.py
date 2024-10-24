@@ -214,10 +214,10 @@ async def user_settings_query(bot, query):
     
   elif type.startswith("selectgroup"):
      logging.warning("Brinco bien hasta aqui id")
-     #chat_id = type.split('_')[1]
-     chat_id = -1001327104418
+     chat_id = int(type.split('_')[1])
      logging.warning(f"Brinco bien hasta aqui id{chat_id}")
      groups = await get_bot_groups(CLIENT.client(_bot))
+     groups_in_db = await get_user_channels(user_id)
      logging.warning(f"Bien hasta aqui {groups}")
      try:
          selected_group = next(
@@ -242,7 +242,9 @@ async def user_settings_query(bot, query):
          logging.error(f"Tuvo fallo en: {e}")
      logging.warning("Adiciono")
       #Eliminar el grupo de la lista de grupos
+     existing_chat_ids = {groups_in_db['chat_id'] for channel in groups_in_db}
      grupos_filtrados = [g for g in groups if g["id"] != chat_id]
+     grupos_filtrados = [group for group in grupos_filtrados if group['id'] not in existing_chat_ids]
        
       #Actualizar la vista para eliminar el grupo seleccionado
      group_buttons = []
