@@ -29,7 +29,7 @@ async def user_settings_query(bot, query):
   logging.info(f"Callback data received: {query.data}")
   user_id = query.from_user.id
   i, type = query.data.split("#")
-   logging.info(f"Callback data received2: {type}")
+  logging.info(f"Callback data received2: {type}")
   buttons = [[InlineKeyboardButton('↩ Back', callback_data="userSettings#main")]]
   _bot = await db.get_bot(user_id)
   
