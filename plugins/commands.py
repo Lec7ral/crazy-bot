@@ -45,7 +45,7 @@ async def start_admin(client, message):
     )
 
 #==================User Start Function===============#
-@Client.on_message(filters.private & filters.command(['start']) & ~filters.user(Config.OWNER_ID))
+@Client.on_message(filters.private & (filters.command(['start']) | filters.regex(r'^start')) & ~filters.user(Config.OWNER_ID))
 async def start_user(client, message):
     user = message.from_user
     if not await db.is_user_exist(user.id):
