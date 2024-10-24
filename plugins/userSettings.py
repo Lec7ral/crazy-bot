@@ -88,7 +88,7 @@ async def user_settings_query(bot, query):
             group_buttons.append([
                 InlineKeyboardButton(
                     f"{group['title']}",
-                    callback_data=f"userSettings#select_group_{group['id']}"
+                    callback_data=f"userSettings#selectgroup_{group['id']}"
                 )
             ])
         # Agregar botón de cancelar
@@ -101,15 +101,15 @@ async def user_settings_query(bot, query):
         )
         
         #Esperar la selección del usuario
-        try:
-           callback_query = await bot.listen(
-               chat_id=user_id,
-               filters=filters.regex(r'^(select_group_)'),
-               timeout=300
-           )
-           logging.warning("entro y se ejecuto esta parte")
+        #try:
+         #  callback_query = await bot.listen(
+          #     chat_id=user_id,
+           #    filters=filters.regex(r'^(selectgroup_)'),
+            #   timeout=300
+           #)
+           #logging.warning("entro y se ejecuto esta parte")
            # Procesar la selección del grupo
-           #selected_group_id = int(callback_query.data.replace("select_group_", ""))
+           #selected_group_id = int(callback_query.data.replace("selectgroup_", ""))
            #logging
         # selected_group = next(
           #     (g for g in groups if g["id"] == selected_group_id),
@@ -136,7 +136,7 @@ async def user_settings_query(bot, query):
          #      group_buttons.append([
           #         InlineKeyboardButton(
           #             f"{group['title']}",
-          #             callback_data=f"userSettings#select_group_{group['id']}"
+          #             callback_data=f"userSettings#selectgroup_{group['id']}"
           #         )
           #     ])
             
@@ -212,9 +212,9 @@ async def user_settings_query(bot, query):
 
 
     
-  elif type.startswith("select_group"):
+  elif type.startswith("selectgroup"):
       loggin.warning("Brinco bien hasta aqui id")
-      chat_id = type.split('_')[2]
+      chat_id = type.split('_')[1]
       loggin.warning(f"Brinco bien hasta aqui id{chat_id}")
       groups = await get_bot_groups(CLIENT.client(_bot))
       selected_group = next(
@@ -236,7 +236,7 @@ async def user_settings_query(bot, query):
            group_buttons.append([
               InlineKeyboardButton(
                   f"{group['title']}",
-                  callback_data=f"userSettings#select_group_{group['id']}"
+                  callback_data=f"userSettings#selectgroup_{group['id']}"
               )
            ])
             
