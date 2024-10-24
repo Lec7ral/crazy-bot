@@ -218,16 +218,22 @@ async def user_settings_query(bot, query):
      logging.warning(f"Brinco bien hasta aqui id{chat_id}")
      groups = await get_bot_groups(CLIENT.client(_bot))
      logging.warning("Bien hasta aqui")
-     selected_group = next(
-               (g for g in groups if g["id"] == chat_id),
-               None
-     )
-     await db.add_channel(
-               user_id,
-               chat_id,
-               selected_group['title'],
-               selected_group['username']
-          )
+     try:
+         selected_group = next(
+                   (g for g in groups if g["id"] == chat_id),
+                   None
+         )
+     except Exception as e:
+         logging.error(f"Tuvo fallo en: {e}")
+     try:    
+         await db.add_channel(
+                   user_id,
+                   chat_id,
+                   selected_group['title'],
+                   selected_group['username']
+              )
+     except Exception as e:
+         logging.error(f"Tuvo fallo en: {e}")
      logging.warning("Adiciono")
       #Eliminar el grupo de la lista de grupos
      grupos_filtrados = [g for g in groups if g["id"] != chat_id]
