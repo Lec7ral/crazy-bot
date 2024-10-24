@@ -162,8 +162,8 @@ async def user_settings_query(bot, query):
                #    reply_markup=InlineKeyboardMarkup(buttons)
                #)
                 
-        except asyncio.exceptions.TimeoutError:
-           logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
+        #except asyncio.exceptions.TimeoutError:
+           #logging.warning("El proceso ha sido cancelado automáticamente por timeout.")
     except Exception as e:
         logging.error(f"Error al enviar mensaje inicial: {str(e)}")
         await bot.send_message(
