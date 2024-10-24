@@ -176,7 +176,7 @@ async def user_settings_query(bot, query):
      logging.warning("Adiciono")
      try: 
         text = "Adicionado correctamente" 
-        await bot.answer_callback_query(query.id, text=text, show_alert=True)
+        await bot.answer_callback_query(query.id, text=text, show_alert=False)
      except Exception as e:
          logging.error(f"Tuvo fallo en: {e}")    
       #Eliminar el grupo de la lista de grupos
