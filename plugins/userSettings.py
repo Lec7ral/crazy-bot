@@ -226,7 +226,7 @@ async def user_settings_query(bot, query):
          logging.warning(selected_group)
      except Exception as e:
          logging.error(f"Tuvo fallo en: {e}")
-    if selected_group is None:
+     if selected_group is None:
         logging.error(f"Grupo seleccionado no encontrado: {chat_id}")
         await query.message.edit_text("Grupo no encontrado.")
         return  # Salir si no se encuentra el grupo
